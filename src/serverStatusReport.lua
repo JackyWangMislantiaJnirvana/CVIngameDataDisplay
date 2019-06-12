@@ -62,6 +62,14 @@ function ProviderManager.registerProvider(name, callback)
   ProviderManager.providers[name] = callback
 end
 
+function ProviderManager.collectData()
+  local data = {}
+  for name, callback in pairs(ProviderManager.providers) do
+    data[name] = json.encode(callback())
+  end
+  return data
+end
+
 ----------------------------------------------------------------------------------------------
 ProviderManager.registerProvider(
         "in-game date",
@@ -84,11 +92,7 @@ ProviderManager.registerProvider(
 
 if not isTest then
   while true do
-    local data = {}
-    for name, callback in pairs(ProviderManager.providers) do
-      data[name] = json.encode(callback())
-    end
-    printResponse(postData(url, data))
+    printResponse(postData(url, ProviderManager.collectData()))
     os.sleep(sleepTime)
   end
 end
