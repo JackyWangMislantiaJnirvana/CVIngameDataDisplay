@@ -1,5 +1,6 @@
 ---
 --- Note: terminate the program using Ctrl+Alt+C
+--- Note: internet.request() supports BOTH http and https
 ---
 
 local internet = require("internet")
@@ -23,12 +24,12 @@ local isTest = false
 -- WON'T test the connectivity at once.
 -- ANY network error will not appear until you read the response
 -- data from the response object.
-function postData(url, data)
+function sendHTTPPost(url, data)
   return internet.request(url, data)
 end
 
 -- Network err handling is located here.
-function printResponse(responseObject)
+function receiveAndPrintResponse(responseObject)
   local success, responseMessage = pcall(function()
     local res = {}
     for chunk in responseObject do
@@ -49,7 +50,7 @@ end
 if isTest then
   print("========Post=Connectivity=Test=======")
   print("[***] sending http post to " .. url)
-  printResponse(postData(url, testData))
+  receiveAndPrintResponse(sendHTTPPost(url, testData))
 end
 
 ---@class ProviderManager
@@ -92,7 +93,7 @@ ProviderManager.registerProvider(
 
 if not isTest then
   while true do
-    printResponse(postData(url, ProviderManager.collectData()))
+    receiveAndPrintResponse(sendHTTPPost(url, ProviderManager.collectData()))
     os.sleep(sleepTime)
   end
 end
