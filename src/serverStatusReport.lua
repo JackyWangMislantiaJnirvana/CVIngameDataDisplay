@@ -2,8 +2,6 @@
 --- Note: terminate the program using Ctrl+Alt+C
 ---
 
---TODO swap info, lasting connection
-
 local internet = require("internet")
 local os = require("os")
 local sep = require("utils.seperate")
@@ -31,26 +29,26 @@ end
 
 -- Network err handling is located here.
 function printResponse(responseObject)
-  local success, responseMessage = pcall(function(ro)
-      local res = {}
-      for chunk in responseObject do
-        table.insert(res, chunk)
-      end
-      return table.concat(res)
-    end)
+  local success, responseMessage = pcall(function()
+    local res = {}
+    for chunk in responseObject do
+      table.insert(res, chunk)
+    end
+    return table.concat(res)
+  end)
   if success then
     print("[ok] post was sent to and accepted by server.")
     print("---------Start-Of-Response----------")
     print(responseMessage)
     print("---------End-Of-Response------------")
   else
-    io.stderr:write("[err] "..responseMessage)
+    io.stderr:write("[err] " .. responseMessage)
   end
 end
 
 if isTest then
   print("========Post=Connectivity=Test=======")
-  print("[***] sending http post to "..url)
+  print("[***] sending http post to " .. url)
   printResponse(postData(url, testData))
 end
 
@@ -79,7 +77,7 @@ ProviderManager.registerProvider(
 ProviderManager.registerProvider(
         "death message",
         function()
-          return {message = "panda_2134 played chicken with a train; the train won"}
+          return { message = "panda_2134 played chicken with a train; the train won" }
         end
 )
 -----------------------------------------------------------------------------------------------
@@ -94,11 +92,3 @@ if not isTest then
     os.sleep(sleepTime)
   end
 end
-
---[=[
-internet.request("http://127.0.0.1:5000/",
-        {
-          status = "OK",
-          message = "panda_2134 played chicken with a train; the train won"
-        })
---]=]
