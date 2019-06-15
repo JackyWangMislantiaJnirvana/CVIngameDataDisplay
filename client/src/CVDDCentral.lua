@@ -5,7 +5,7 @@
 
 local internet = require("internet")
 local os = require("os")
-local sep = require("utils.seperate")
+local sep = require("utils.separate")
 local json = require("json")
 
 local url = "http://127.0.0.1:5000/"
@@ -93,7 +93,16 @@ ProviderManager.registerProvider(
 
 if not isTest then
   while true do
-    receiveAndPrintResponse(sendHTTPPost(url, ProviderManager.collectData()))
+    -- wow, I want a pipeline
+    receiveAndPrintResponse(
+            sendHTTPPost(
+                    url,
+                    appendAuthHeader(
+                            appendPayload({},
+                                    ProviderManager.collectData())
+                    )
+            )
+    )
     os.sleep(sleepTime)
   end
 end
