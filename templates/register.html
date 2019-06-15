@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Register</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+            <img src="/static/img/icon.png" class="img-responsive"></img>
+            <div class="alert alert-danger" id="registerErrorAlert" style="display: none">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Registration failed.</strong>
+                <div id="wrongUsername" style="display: none">Username in use.</div>
+                <div id="wrongPassword" style="display: none">Passwords don't match.</div>
+                <div id="wrongInvCode" style="display: none">Invalid invite code.</div>
+            </div>
+            <div class="alert alert-danger" id="internalErrorAlert" style="display: none">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Internal error.</strong> <br/>
+                <p>Please contact the website administrator.</p>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Register an account
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <form id="registerForm" action="#" method="POST">
+                        <div class="form-group">
+                            <label for="inputUsername">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder=""
+                                   required
+                                   pattern="[0-9a-zA-Z_]{1,16}"
+                                   title="Username should only contain letters, numbers and underscore, and mustn't exceed 16 characters. e.g. JohnDoe_1">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="" required
+                                   minlength=6>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPasswordAgain">Password Again</label>
+                            <input type="password" class="form-control" name="passwordAgain" placeholder="" required
+                                   minlength=6>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputInviteCode">Invite Code</label>
+                            <input type="text" class="form-control" name="inviteCode" placeholder="" required
+                                   pattern="[0-9a-zA-Z]{12}">
+                        </div>
+                        <button class="btn btn-block btn-md btn-primary" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.form.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script>
+            $('#registerForm').ajaxForm({error: function(xhr) {
+                $('#wrongUsername').hide();
+                $('#wrongPassword').hide();
+                $('#wrongInvCode').hide();
+                if(xhr.status == 403) {
+                    $('#registerErrorAlert').show();
+                    if(xhr.responseText == 'wrongUsername')
+                    $('#wrongUsername').show();
+                    else if(xhr.responseText == 'wrongPassword')
+                    $('#wrongPassword').show();
+                    else if(xhr.responseText == 'wrongInvCode')
+                    $('#wrongInvCode').show();
+                } else
+                $("#internalErrorAlert").show();
+            }, success: function() { window.location.href = "{{ url_for('auth.login') }}"; }});
+            
+
+</script>
+</body>
+
+</html>
+    
