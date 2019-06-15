@@ -6,14 +6,14 @@
 }
 ```
 
-- `image` 标量图
+- `image` 标量图（`value`字段是图片的Base64串）
 ```json
 {
     "type":"image",
     "height":120,
     "weight":120,
     "title":"map",
-    "value":"asdasdfasdfasdf..." //base64
+    "value":"asdasdfasdfasdf..."
 }
 ```
 
