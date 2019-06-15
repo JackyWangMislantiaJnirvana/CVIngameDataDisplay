@@ -1,0 +1,26 @@
+{
+  "Nuclear Generator": {
+    "Current generating": {
+      "type": "text",
+      "value": "50eu/t"
+    },
+    "Buffered energy": {
+      "type": "ratio",
+      "value": "500/8192"
+    }
+  },
+  "Main power bank": {
+    "Input": {
+      "type": "text",
+      "value": "200eu/t"
+    },
+    "Output": {
+      "type": "text",
+      "value": "0eu/t"
+    },
+    "Energy storage": {
+      "type": "ratio",
+      "value": "52488/131072"
+    }
+  }
+}
