@@ -1,16 +1,16 @@
 {% if datum.type == 'text' %}
 <div class="row">
-    <div class="col-lg-4">
-        <span class="badge badge-default">{{ datum.key }}</span>
+    <div class="col-lg">
+        <h6>{{ datum.key }}</h6>
     </div>
-    <div class="col-lg-8">
-        <div class="pull-right">{{ datum.value }}</div>
+    <div class="col-lg">
+        <div class="float-right">{{ datum.value }}</div>
     </div>
 </div>
 {% elif datum.type == 'image' %}
 <div class="row">
     <div class="col-lg-12">
-        <span class="badge badge-default">{{ datum.caption }}</span>
+        <h6>{{ datum.caption }}</h6>
     </div>
 </div>
 <div class="row">
@@ -20,10 +20,10 @@
 </div>
 {% elif datum.type == 'ratio' %}
 <div class="row">
-    <div class="col-lg-4">
-        <span class="badge badge-default">{{ datum.key }}</span>
+    <div class="col-lg">
+        <h6>{{ datum.key }}</h6>
     </div>
-    <div class="col-lg-8">
+    <div class="col-lg">
         <div class="progress">
             <div class="progress-bar" role="progressbar"
                  style="width: {{ datum.value_ratio }}">{{ datum.value_text }}

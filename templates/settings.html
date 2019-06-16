@@ -10,8 +10,10 @@
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
     <link href="/static/css/simple-sidebar.css" rel="stylesheet">
     <link href="/static/css/animate.css" rel="stylesheet">
+    <link href="/static/css/fontawesome-all.min.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
@@ -20,64 +22,77 @@
 </head>
 
 <body>
+<script defer src="/static/js/jquery.min.js"></script>
+<script defer src="/static/js/popper.min.js"></script>
+<script defer src="/static/js/bootstrap.min.js"></script>
+<script defer src="/static/js/jquery.form.min.js"></script>
+<script defer src="/static/js/bootstrap-notify.min.js"></script>
+<script defer src="/static/js/bootbox.all.min.js"></script>
+<script defer src="/static/js/clipboard.min.js"></script>
+<script defer src="/static/js/settings.js"></script>
 {% include 'navbar_default.html' %}
-<div class="container">
+<div class="d-flex" id="wrapper">
     <!-- Sidebar -->
-    <div class="row">
-        <div class="col-md-3">
             <div class="bg-light border-right" id="sidebar-wrapper">
+                <div class="sidebar-heading">User settings</div>
                 <div class="list-group list-group-flush">
                     <a onclick="switchSettings('general')" id="sidebar-general"
-                       class="list-group-item active">General</a>
+                       class="list-group-item list-group-item-action bg-light active">General</a>
                     <a onclick="switchSettings('stat')" id="sidebar-stat"
-                       class="list-group-item">Statistics</a>
-                    {% if g.user['admin'] == 1 %}
-                    <a onclick="switchSettings('accounts')" id="sidebar-accounts"
-                       class="list-group-item">Accounts</a>
-                    <a onclick="switchSettings('invcode')" id="sidebar-invcode"
-                       class="list-group-item">Invite Code</a>
-                    {% endif %}
+                       class="list-group-item list-group-item-action bg-light">Statistics</a>
                 </div>
+                {% if g.user['admin'] == 1 %}
+                <div class="sidebar-heading">Site Management</div>
+                <div>
+                    <a onclick="switchSettings('accounts')" id="sidebar-accounts"
+                       class="list-group-item list-group-item-action bg-light">Accounts</a>
+                    <a onclick="switchSettings('invcode')" id="sidebar-invcode"
+                       class="list-group-item list-group-item-action bg-light">Invite Code</a>
+                </div>
+                {% endif %}
             </div>
             <!-- /#sidebar-wrapper -->
-        </div>
 
-        <div class="col-md-9">
-            <!-- Page Content -->
-            <div id="page-content-wrapper">
-                <div class="sidebar-page" id="page-general">
-                    <!-- Edit description -->
-                    <div style="margin-bottom:5rem">
-                        <h3>Description</h3>
-                        <hr/>
-                        <form id="descriptionForm" role="form" method="POST"
-                              action="{{ url_for('users.edit_description', username=g.user['username']) }}">
-                            <div class="form-group">
-                                <label>Edit description</label>
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <input type="text" class="form-control" name="description"
-                                               value="{{ g.user['description'] }}"/>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <input type="submit" value="Submit" class="btn btn-md btn-primary">
+    <!-- Page Content -->
+    <main id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row" style="margin-top: 1rem">
+                <div class="col-md-12">
+                    <div class="sidebar-page" id="page-general">
+                        <!-- Edit description -->
+                        <div style="margin-bottom:5rem">
+                            <h3>Description</h3>
+                            <hr/>
+                            <form id="descriptionForm" role="form" method="POST"
+                                  action="{{ url_for('users.edit_description') }}">
+                                <div class="form-group">
+                                    <label>Edit description</label>
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <input type="text" class="form-control" name="description"
+                                                   value="{{ g.user['description'] }}"/>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="submit" value="Submit" class="btn btn-md btn-primary">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                    </div>
+                            </form>
+                        </div>
 
-                    <!--change password-->
-                    <div style="margin-bottom:5rem">
-                        <h3>Change password</h3>
-                        <hr/>
-                        <form id="changePWForm" role="form" method="POST"
-                              action="{{ url_for('users.change_pw', username=g.user['username']) }}">
+                        <!--change password-->
+                        <div style="margin-bottom:5rem">
+                            <h3>Change password</h3>
+                            <hr/>
+                            <form id="changePWForm" role="form" method="POST"
+                                  action="{{ url_for('users.change_pw') }}">
                             <div class="form-group">
+                                <label>Old Password</label>
+                                <input type="password" class="form-control" name="passwordOld" required>
                                 <label>New Password</label>
-                                <input type="password" class="form-control" name="password" required>
+                                <input type="password" class="form-control" name="passwordNew" required>
                                 <label>New Password Again</label>
-                                <input type="password" class="form-control" name="passwordAgain" required>
+                                <input type="password" class="form-control" name="passwordNewAgain" required>
                             </div>
                             <div class="form-group">
                                 <input type="submit" value="Submit" class="btn btn-md btn-primary">
@@ -85,7 +100,7 @@
                         </form>
                     </div>
 
-                    <!-- show api secret -->
+                        <!-- show api secret -->
                     <div style="margin-bottom:5rem">
                         <h3>API</h3>
                         <hr/>
@@ -103,45 +118,94 @@
                 </div>
                 {% if g.user['admin'] == 1 %}
                 <div class="sidebar-page" id="page-accounts" style="display: none;">
+                    <h3>Account Management</h3>
+                    <hr/>
                     <table class="table">
-                        <thead>
+                        <thead class="thead-light">
                         <tr>
                             <th>UID</th>
                             <th>Username</th>
                             <th>Description</th>
                             <th>Admin?</th>
                             <th>Reset Password</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for user in userlist %}
-                        <tr>
-                            <td>{{ user['id'] }}</td>
-                            <td>{{ user['username'] }}</td>
-                            <td>{{ user['description'] }}</td>
-                            <td><input type="checkbox" id="{{ user['username'] }}-is-admin"
-                                       {% if user['admin'] == 1 %}
-                                checked
-                                {% endif %}
-                                />
+                        <tr id="{{ user.username }}">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.description }}</td>
+                            <td>
+                                    <span class="switch switch-sm">
+                                        <input type="checkbox" class="switch" id="{{ user.username }}-is-admin"
+                                               {% if user['admin'] == 1 %}
+                                        checked
+                                        {% endif %}
+                                        onchange="recheckIsAdminState('{{ user.username }}')"/>
+                                        <label for="{{ user.username }}-is-admin"></label>
+                                    </span>
                             </td>
-                            <td></td>
+                            <td>
+                                <button class="btn btn-light" onclick="resetPassword('{{ user.username }}')">
+                                    Reset
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="close removeBtn"
+                                        onclick="removeUser('{{ user.username }}');">×
+                                </button>
+                            </td>
                         </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <div class="sidebar-page" id="page-invcode" style="display: none;">invcode</div>
+                    <div class="sidebar-page" id="page-invcode" style="display: none;">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Invite Code Management</h3>
+                            </div>
+                            <div class="col">
+                                <div class="float-right">
+                                    <button class="btn btn-secondary" onclick="appendInviteCode()"><span
+                                            class="fa fa-plus"></span> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Invite Code</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="invcode-list">
+                            {% for invcode in invcode_list %}
+                            <tr id="{{ invcode.code }}">
+                                <td>{{ invcode.id }}</td>
+                                <td>{{ invcode.code }}</td>
+                                <td>
+                                    <button type="button" class="close removeBtn"
+                                            onclick="removeInvCode('{{ invcode.code }}');">×
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/jquery.form.min.js"></script>
-<script src="/static/js/bootstrap-notify.min.js"></script>
-<script src="/static/js/settings.js"></script>
+</main>
+</div>
 </body>
 
 </html>

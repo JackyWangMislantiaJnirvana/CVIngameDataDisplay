@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en-US">
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Minecraft Ingame Data Display</title>
 
     <!-- Bootstrap core CSS -->
@@ -14,77 +12,55 @@
 
     <!-- Custom styles for this template -->
     <link href="/static/css/cover.css" rel="stylesheet">
-
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 
-<body>
+<body class="text-center" style="background: url('/static/img/bg.png')">
 
-<div class="site-wrapper" style="background: url('/static/img/bg.png')">
-
-    <div class="site-wrapper-inner">
-
-        <div class="cover-container">
-
-            <div class="masthead clearfix">
-                <div class="inner">
-                    <h3 class="masthead-brand">Minecraft Ingame Data Display</h3>
-                    <nav>
-                        <ul class="nav masthead-nav">
-                            <li class="active"><a href="/">Home</a></li>
-                            <li><a href="/users/">User list</a></li>
-                            <li class="divider-vertical">
-                            </li>
-                            {% if g.user %}
-                            <li class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                    {{ g.user['username'] }}<b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu masthead-dropdown">
-                                    <li><a href="{{ url_for('users.show_dashboard', username=g.user['username']) }}">Dashboard</a>
-                                    </li>
-                                    <li><a href="{{ url_for('users.show_settings', username=g.user['username']) }}">Settings</a>
-                                    </li>
-                                    <li class="divider">
-                                    </li>
-                                    <li>
-                                        <a href="{{ url_for('auth.logout') }}">Log out</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            {% else %}
-                            <li><a href="/login">Log in</a></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
+<div class="cover-container d-flex w-100 h-100 pt-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h3 class="masthead-brand">Minecraft Ingame Data Display</h3>
+            <nav class="nav nav-masthead justify-content-center ml-5">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link" href="{{ url_for('users.user_list') }}">User list</a>
+                {% if g.user %}
+                <div class="nav-link dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        {{ g.user['username'] }}
+                    </a>
+                    <div class="dropdown-menu masthead-dropdown">
+                        <a class="dropdown-item"
+                           href="{{ url_for('users.show_dashboard', username=g.user['username']) }}">Dashboard</a>
+                        <a class="dropdown-item"
+                           href="{{ url_for('users.show_settings', username=g.user['username']) }}">Settings</a>
+                        <div class="dropdown-divider">
+                        </div>
+                        <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="inner cover">
-                <h1 class="cover-heading">Minecraft Ingame Data Display</h1>
-                <p class="lead">Keep an eye on the in-game machines online!</p>
-                <p class="lead">
-                    <a href="/users/" class="btn btn-lg btn-default">Explore</a>
-                </p>
-            </div>
-
-            <div class="mastfoot">
-                <div class="inner">
-                    <p>By Jacky_Wang &amp; panda_2134</p>
-                </div>
-            </div>
-
+                {% else %}
+                <a class="nav-link" href="/login">Log in</a>
+                {% endif %}
+            </nav>
         </div>
+    </header>
 
+    <main role="main" class="inner cover">
+        <h1 class="cover-heading">Minecraft Ingame Data Display</h1>
+        <p class="lead">Keep an eye on the in-game machines online!</p>
+        <p class="lead">
+            <a href="/users/" class="btn btn-lg btn-secondary">Explore</a>
+        </p>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>By Jacky_Wang &amp; panda_2134</p>
+        </div>
+    </footer>
     </div>
-
-</div>
-
 <script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 </body>
 </html>
-  

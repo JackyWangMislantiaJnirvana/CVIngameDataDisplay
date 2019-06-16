@@ -10,6 +10,8 @@
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/animate.css" rel=“stylesheet">
+    <link href="/static/css/fontawesome-all.min.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
@@ -20,17 +22,18 @@
 <body>
 <script src="/static/js/dashboard.js"></script>
 {% include 'navbar_default.html' %}
-<div class="container">
+<div class="container mt-5">
     <div class="row">
         <div class="col-lg-12">
             <div class="page-header">
-                <h1>Dashboard - {{ username }}</h1>
+                <h1 class="display-4">Dashboard - {{ username }}</h1>
                 {% if g.user and g.user['username'] == username %}
-                <div class="pull-right">
-                    <button class="btn btn-md" onclick="$('#addDataset').modal('show')"><span
-                            class="glyphicon glyphicon-plus"></span> Add
+                <div class="float-right btn-group" role="group">
+                    <button class="btn btn-secondary" onclick="$('#addDataset').modal('show')"><span
+                            class="fa fa-plus"></span> Add
                     </button>
-                    <button class="btn btn-md" onclick="toggleRemove();"><span class="glyphicon glyphicon-trash"></span>
+                    <button class="btn btn-secondary" onclick="toggleRemove();"><span
+                            class="fa fa-trash"></span>
                         Remove
                     </button>
                 </div>
@@ -38,12 +41,14 @@
                 <p>{{ desc | truncate(140) }}</p>
             </div>
 
+            <hr/>
+
             <div class="modal fade" id="addDataset" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title">Add a dataset</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
                             <form action="{{ url_for('dashboard_manager.add', username=username) }}" role="form"
@@ -65,52 +70,53 @@
 
             {% for id in datasets %}
 
-            <!-- Render in panels -->
-            {% if loop.index0 is divisibleby 3 %}
+            <!-- Render in cards -->
+            {% set COL_PER_ROW = 3 %}
+            {% if loop.index0 is divisibleby COL_PER_ROW %}
             <div class="row">
                 {% endif %}
 
-                <div class="col-md-4">
-                    <div class="panel panel-info" onclick="$('#{{ id }}').modal('show')" id="{{ datasets[id].key }}">
-                        <div class="panel-heading">
-                            <form action="{{ url_for('dashboard_manager.remove', username=username) }}"
+                <div class="col-md-{{ (12 / COL_PER_ROW) | int }}">
+                    <div class="card" onclick="$('#{{ id }}').modal('show')" id="{{ datasets[id].key }}">
+                        <div class="card-header">
+                            <form class="form-inline"
+                                  action="{{ url_for('dashboard_manager.remove', username=username) }}"
                                   id="{{ id }}-remove"
                                   method="POST">
                                 <input type="hidden" name="id" value="{{ id }}"/>
                             </form>
                             <button type="button" class="close removeBtn" style="display: none;" \
-                                    onclick="$('#{{ id }}-remove').submit(); Location.reload()">&times;
+                                    onclick="$('#{{ id }}-remove').submit(); Location.reload()">×
                             </button>
-                            {{ datasets[id].name }}
-                            <div class="pull-right">
-                                <p class="text-info">Last update: 2 mins ago</p>
-                            </div>
+                            <h5 class="card-title">{{ datasets[id].name }}</h5>
+                            <div class="text-info">Last update: 2 mins ago</div>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
+                            <p class="card-text">
                             {% for datum in datasets[id].data %}
                             {% include 'datum_renderer.html' %}
                             {% endfor %}
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                {% if loop.index0+1 is divisibleby 3 or loop.last %}
+                {% if loop.index0+1 is divisibleby COL_PER_ROW or loop.last %}
             </div>
             {% endif %}
 
             <!-- Render in modal dialogs -->
             <div>
                 <div id="{{ id }}" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
 
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <div class="pull-right">
-                                    <p class="text-info">Last update: 2 mins ago</p>
-                                </div>
-                                <h3 class="modal-title">{{ datasets[id].name }}&nbsp;<small>{{ id }}</small>
+                                <h3 class="modal-title">
+                                    {{ datasets[id].name }}&nbsp;<small class="text-muted">{{ id }}</small>
                                 </h3>
+                                <p class="float-right text-info" style="margin-left: auto;">Last update: 2 mins ago</p>
                             </div>
                             <div class="modal-body">
                                 {% for datum in datasets[id].data %}
@@ -127,6 +133,7 @@
     </div>
 </div>
 <script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 </body>
 

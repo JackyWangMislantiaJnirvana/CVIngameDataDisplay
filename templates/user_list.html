@@ -19,20 +19,19 @@
 
 <body>
 {% include 'navbar_default.html' %}
-<div class="container-fluid">
+<div class="container mt-5">
 
-    <div class="row-fluid">
-        <div class="col-md-8 col-md-offset-2">
             {% for user in users %}
 
-            {% if loop.index0 is divisibleby 4 %}
-            <div class="row-fluid">
+    {% set COL_PER_ROW = 4 %}
+    {% if loop.index0 is divisibleby COL_PER_ROW %}
+    <div class="row">
                 {% endif %}
 
-                <div class="col-sm-3">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">{{ user.username }}</div>
-                        <div class="panel-body">
+        <div class="col-md-{{ (12 / COL_PER_ROW) | int }}">
+            <div class="card card-info">
+                <div class="card-header">{{ user.username }}</div>
+                <div class="card-body">
                             {{ user.description }}
                             <hr/>
                             <button type="button" class="btn btn-primary"
@@ -43,7 +42,7 @@
                     </div>
                 </div>
 
-                {% if loop.index0+1 is divisibleby 4 or loop.last %}
+        {% if loop.index0+1 is divisibleby COL_PER_ROW or loop.last %}
             </div>
             {% endif %}
 
@@ -57,10 +56,9 @@
                 </p>
             </div>
             {% endfor %}
-        </div>
-    </div>
 </div>
 <script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 </body>
 

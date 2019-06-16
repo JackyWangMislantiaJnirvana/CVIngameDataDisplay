@@ -20,8 +20,8 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2 col-md-offset-5">
-            <img src="/static/img/icon.png" class="img-responsive"></img>
+        <div class="col-md-2 offset-5">
+            <img src="/static/img/icon.png" height=300px width=300px></img>
 
             <div class="alert alert-danger" id="loginFailedAlert" style="display: none">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -33,11 +33,11 @@
                 <strong>Internal error.</strong> <br/>
                 <p>Please contact the website administrator.</p>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     <h4>Log in</h4>
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <form id="loginForm" action="#" method="POST" autocomplete="on">
                         <div class="form-group">
                             <label for="inputUsername">Username</label>
@@ -53,7 +53,7 @@
                                    minlength=6>
                         </div>
                         <div class="form-text text-muted">
-                            Not having an account? <a href="/register">Create one.</a>
+                            <a href="/register">Not having an account?</a>
                         </div>
                         <button class="btn btn-block btn-md btn-primary" type="submit" onsubmit="">Submit</button>
                     </form>
@@ -64,6 +64,7 @@
 </div>
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.form.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script>
             $('#loginForm').ajaxForm({error: function(xhr, state, text) {
