@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Settings</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
+    <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/static/css/animate.css" rel="stylesheet">
+    <link href="/static/css/fontawesome-all.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<script defer src="/static/js/jquery.min.js"></script>
+<script defer src="/static/js/popper.min.js"></script>
+<script defer src="/static/js/bootstrap.min.js"></script>
+<script defer src="/static/js/jquery.form.min.js"></script>
+<script defer src="/static/js/bootstrap-notify.min.js"></script>
+<script defer src="/static/js/bootbox.all.min.js"></script>
+<script defer src="/static/js/clipboard.min.js"></script>
+<script defer src="/static/js/settings.js"></script>
+{% include 'navbar_default.html' %}
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+            <div class="bg-light border-right" id="sidebar-wrapper">
+                <div class="sidebar-heading">User settings</div>
+                <div class="list-group list-group-flush">
+                    <a onclick="switchSettings('general')" id="sidebar-general"
+                       class="list-group-item list-group-item-action bg-light active">General</a>
+                    <a onclick="switchSettings('stat')" id="sidebar-stat"
+                       class="list-group-item list-group-item-action bg-light">Statistics</a>
+                </div>
+                {% if g.user['admin'] == 1 %}
+                <div class="sidebar-heading">Site Management</div>
+                <div>
+                    <a onclick="switchSettings('accounts')" id="sidebar-accounts"
+                       class="list-group-item list-group-item-action bg-light">Accounts</a>
+                    <a onclick="switchSettings('invcode')" id="sidebar-invcode"
+                       class="list-group-item list-group-item-action bg-light">Invite Code</a>
+                </div>
+                {% endif %}
+            </div>
+            <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <main id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row" style="margin-top: 1rem">
+                <div class="col-md-12">
+                    <div class="sidebar-page" id="page-general">
+                        <!-- Edit description -->
+                        <div style="margin-bottom:5rem">
+                            <h3>Description</h3>
+                            <hr/>
+                            <form id="descriptionForm" role="form" method="POST"
+                                  action="{{ url_for('users.edit_description') }}">
+                                <div class="form-group">
+                                    <label>Edit description</label>
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <input type="text" class="form-control" name="description"
+                                                   value="{{ g.user['description'] }}"/>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="submit" value="Submit" class="btn btn-md btn-primary">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!--change password-->
+                        <div style="margin-bottom:5rem">
+                            <h3>Change password</h3>
+                            <hr/>
+                            <form id="changePWForm" role="form" method="POST"
+                                  action="{{ url_for('users.change_pw') }}">
+                            <div class="form-group">
+                                <label>Old Password</label>
+                                <input type="password" class="form-control" name="passwordOld" required>
+                                <label>New Password</label>
+                                <input type="password" class="form-control" name="passwordNew" required>
+                                <label>New Password Again</label>
+                                <input type="password" class="form-control" name="passwordNewAgain" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-md btn-primary">
+                            </div>
+                        </form>
+                    </div>
+
+                        <!-- show api secret -->
+                    <div style="margin-bottom:5rem">
+                        <h3>API</h3>
+                        <hr/>
+                        <form role="form">
+                            <label>API Secret</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="apiSecret" readonly
+                                       value="{{ g.user['api_secret'] }}"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="sidebar-page" id="page-stat" style="display: none;">
+                    Working in progress
+                </div>
+                {% if g.user['admin'] == 1 %}
+                <div class="sidebar-page" id="page-accounts" style="display: none;">
+                    <h3>Account Management</h3>
+                    <hr/>
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>UID</th>
+                            <th>Username</th>
+                            <th>Description</th>
+                            <th>Admin?</th>
+                            <th>Reset Password</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in userlist %}
+                        <tr id="{{ user.username }}">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.description }}</td>
+                            <td>
+                                    <span class="switch switch-sm">
+                                        <input type="checkbox" class="switch" id="{{ user.username }}-is-admin"
+                                               {% if user['admin'] == 1 %}
+                                        checked
+                                        {% endif %}
+                                        onchange="recheckIsAdminState('{{ user.username }}')"/>
+                                        <label for="{{ user.username }}-is-admin"></label>
+                                    </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-light" onclick="resetPassword('{{ user.username }}')">
+                                    Reset
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="close removeBtn"
+                                        onclick="removeUser('{{ user.username }}');">×
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                    <div class="sidebar-page" id="page-invcode" style="display: none;">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Invite Code Management</h3>
+                            </div>
+                            <div class="col">
+                                <div class="float-right">
+                                    <button class="btn btn-secondary" onclick="appendInviteCode()"><span
+                                            class="fa fa-plus"></span> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Invite Code</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="invcode-list">
+                            {% for invcode in invcode_list %}
+                            <tr id="{{ invcode.code }}">
+                                <td>{{ invcode.id }}</td>
+                                <td>{{ invcode.code }}</td>
+                                <td>
+                                    <button type="button" class="close removeBtn"
+                                            onclick="removeInvCode('{{ invcode.code }}');">×
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</div>
+</body>
+
+</html>
