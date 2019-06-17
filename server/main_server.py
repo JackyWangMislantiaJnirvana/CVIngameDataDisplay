@@ -1,12 +1,14 @@
 from flask import *
 
-import auth
-import dashboard_manager
-import users
-from database import close_database
+from server import auth
+from server import dashboard_manager
+from server import users
+from server.database import close_database
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
+
+print(app.config['DATABASE'])
 
 # blueprint
 app.register_blueprint(auth.bp)

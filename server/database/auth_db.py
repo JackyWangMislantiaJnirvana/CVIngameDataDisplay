@@ -4,7 +4,7 @@ import string
 
 from flask import current_app
 
-import database
+from server import database
 
 
 # Invite code database
@@ -18,9 +18,9 @@ def invite_code_exists(code=None) -> bool:
 def append_invite_code() -> str:
     db = database.get_database()
 
-    code: str = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+    code: str = ''.join(random.sample(string.ascii_letters + string.digits, 12))
     while invite_code_exists(code):
-        code = ''.join(random.sample(string.ascii_letters + string.digits, 8))
+        code = ''.join(random.sample(string.ascii_letters + string.digits, 12))
 
     db.execute('INSERT INTO invite_code (code) values (?)', (code,))
     db.commit()

@@ -6,8 +6,7 @@ from flask import (
     Blueprint, g, redirect, render_template, request, session, url_for, abort
 )
 
-# from db import get_db
-from database import auth_db
+from server.database import auth_db
 
 bp = Blueprint('auth', __name__)
 

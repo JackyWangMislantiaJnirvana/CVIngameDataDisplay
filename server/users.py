@@ -1,6 +1,7 @@
 from flask import *
 
-from database import auth_db
+from server.auth import login_required
+from server.database import auth_db
 
 bp = Blueprint('users', __name__)
 
@@ -56,6 +57,7 @@ def show_dashboard(username):
     return render_template('dashboard.html', username=username, desc=desc, datasets=datasets)
 
 
+@login_required
 @bp.route('/settings/')
 def show_settings():
     if g.user is None:
