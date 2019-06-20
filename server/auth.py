@@ -71,15 +71,15 @@ def register():
         username = request.form['username']
         password = request.form['password']
         password_again = request.form['passwordAgain']
-        inviteCode = request.form['inviteCode']
+        invite_code = request.form['inviteCode']
 
         if server.database.auth.username_exists(username) or not valid_username(username):
             return 'wrongUsername', 403
         elif password != password_again:
             return 'wrongPassword', 403
-        elif not server.database.auth.invite_code_exists(inviteCode):
+        elif not server.database.auth.invite_code_exists(invite_code):
             return 'wrongInvCode', 403
         else:
             api_secret = str(uuid.uuid4())
-            server.database.auth.create_user(username, password, inviteCode, api_secret)
+            server.database.auth.create_user(username, password, invite_code, api_secret)
             return '', 204

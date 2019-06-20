@@ -2,7 +2,7 @@
 
 #### Navbar
 
-Ingame Data Display | 	Home  	| Login
+Ingame DataType Display | 	Home  	| Login
 
 Carousel -- OpenComputers
 
@@ -38,7 +38,7 @@ gadgets
 
 - Customize(Hidden if not logged in)
 
-  +Add Data/Static Text/Static Image
+  +Add DataType/Static Text/Static Image
 
   ⚙Customize: id, name
 

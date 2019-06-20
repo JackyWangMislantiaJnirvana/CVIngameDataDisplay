@@ -5,7 +5,7 @@ from flask import render_template
 import server
 
 
-class Data:
+class DataType:
     '''
     Represent a datum in the dataset.
     Initialize with a dict (see API)
@@ -19,12 +19,12 @@ class Data:
         self.__dict__ = d
 
 
-class PhyQuantity(Data):
+class PhyQuantity(DataType):
     def __init__(self, d):
         assert('unit' in d and 'value' in d)
         super().__init__(d)
 
-    def __str__(self):
+    def __repr__(self):
         return str(self.value) + str(self.unit)
 
     def render(self, display_name):
@@ -32,7 +32,7 @@ class PhyQuantity(Data):
                                display_name=display_name, value=self.value, unit=self.unit)
 
 
-class Text(Data):
+class Text(DataType):
     def __init__(self, d):
         assert('value' in d)
         super().__init__(d)
@@ -42,7 +42,7 @@ class Text(Data):
                                display_name=display_name, value=self.value)
 
 
-class Boolean(Data):
+class Boolean(DataType):
     def __init__(self, d):
         assert('value' in d)
         super().__init__(d)
@@ -52,10 +52,19 @@ class Boolean(Data):
                                display_name=display_name, value=self.value)
 
 
-class Vector(Data):
+class Vector(DataType):
     def __init__(self, d):
         assert('value' in d)
         super().__init__(d)
 
     def render(self, *args, **kwargs):
         raise NotImplementedError('Vector Data cannot be rendered')
+
+
+class Image(DataType):
+    def __init__(self, d):
+        assert('value' in d)
+        super().__init__(d)
+
+    def render(self, display_name):
+        return NotImplementedError('Use Custom Renderer to render an image')
