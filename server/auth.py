@@ -6,7 +6,8 @@ from flask import (
     Blueprint, g, redirect, render_template, request, session, url_for, abort
 )
 
-from server.database import auth_db
+import server.database
+import server.database.auth
 
 bp = Blueprint('auth', __name__)
 
@@ -32,7 +33,7 @@ def load_logged_in_user():
     if username is None:
         g.user = None
     else:
-        g.user = auth_db.get_user(username)
+        g.user = server.database.auth.get_user(username)
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -45,7 +46,7 @@ def login():
     else:
         username = request.form['username']
         password = request.form['password']
-        if auth_db.validate_login(username, password):
+        if server.database.auth.validate_login(username, password):
             session.clear()
             session['username'] = username
             return '', 204
@@ -69,16 +70,16 @@ def register():
     else:
         username = request.form['username']
         password = request.form['password']
-        passwordAgain = request.form['passwordAgain']
+        password_again = request.form['passwordAgain']
         inviteCode = request.form['inviteCode']
 
-        if auth_db.username_exists(username) or not valid_username(username):
+        if server.database.auth.username_exists(username) or not valid_username(username):
             return 'wrongUsername', 403
-        elif password != passwordAgain:
+        elif password != password_again:
             return 'wrongPassword', 403
-        elif not auth_db.invite_code_exists(inviteCode):
+        elif not server.database.auth.invite_code_exists(inviteCode):
             return 'wrongInvCode', 403
         else:
             api_secret = str(uuid.uuid4())
-            auth_db.create_user(username, password, inviteCode, api_secret)
+            server.database.auth.create_user(username, password, inviteCode, api_secret)
             return '', 204

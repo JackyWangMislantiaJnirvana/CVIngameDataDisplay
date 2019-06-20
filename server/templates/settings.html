@@ -126,6 +126,7 @@
                             <th>UID</th>
                             <th>Username</th>
                             <th>Description</th>
+                            <th>API Secret</th>
                             <th>Admin?</th>
                             <th>Reset Password</th>
                             <th></th>
@@ -136,7 +137,8 @@
                         <tr id="{{ user.username }}">
                             <td>{{ user.id }}</td>
                             <td>{{ user.username }}</td>
-                            <td>{{ user.description }}</td>
+                            <td>{{ user.description | truncate(20) }}</td>
+                            <td>{{ user.api_secret }}</td>
                             <td>
                                     <span class="switch switch-sm">
                                         <input type="checkbox" class="switch" id="{{ user.username }}-is-admin"

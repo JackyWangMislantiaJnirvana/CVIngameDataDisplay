@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS invite_code;
 
 CREATE TABLE user ( id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, description TEXT, api_secret TEXT NOT NULL, admin INTEGER);
 

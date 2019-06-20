@@ -30,7 +30,7 @@
                     </a>
                     <div class="dropdown-menu masthead-dropdown">
                         <a class="dropdown-item"
-                           href="{{ url_for('users.show_dashboard', username=g.user['username']) }}">Dashboard</a>
+                           href="{{ url_for('dashboard_manager.show_dashboard', username=g.user['username']) }}">Dashboard</a>
                         <a class="dropdown-item"
                            href="{{ url_for('users.show_settings', username=g.user['username']) }}">Settings</a>
                         <div class="dropdown-divider">

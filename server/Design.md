@@ -16,7 +16,7 @@ List of accounts & data
 
 #### /login
 
-Wordpress style
+WordPress style
 
 *verify code
 
@@ -72,26 +72,92 @@ Example:
     	"6bfac483": {
     		"name": "MFE",
     		"data": {
-                "Battery": {
-                    "type": "ratio",
-                    "value": {
-                        "text": "524288/1048576",
-                        "ratio": "75%"
-                    }
+    			"gen": {
+                    type: "PhyQuantity",
+                    unit: "EU/t",
+                    value: 1024
+                },
+                "battery": {
+                    "type": "PhyQuantity",
+                    "unit": "EU",
+                    "value": 5000
+                },
+                "capacity": {
+                    "type": "PhyQuantity",
+                    "unit": "EU",
+                    "value": 32768
+                },
+            	"map": {
+            		"type": "Image"
+                    "value": "data:image/gif;base64,R..."
                 }
-                "Current generating": {
-                	"type": "text",
-                	"value": "50 eu/t"
-           		},
-            	"Map": {
-                	"type": "image",
-                	"height": 240,
-                	"width": 320,
-                	"value": "data:image/gif;base64,R..." //base64 of png image
-            	}
             }
         }
     }
 
 ```
 
+
+
+### Details of dashboard
+
+1. Database
+
+   - create a table for each user (suppose UID of "panda_2134" is 1)
+
+   - `id` is a 32-bit integer in hex notation, i.e. '6bfac483'
+
+     ```sql
+       CREATE TABLE dashboard_1 (
+           id INTEGER PRIMARY KEY, 
+           title TEXT, 
+           data TEXT, 
+           layout TEXT,
+           last_update INTEGER)
+     ```
+
+   - `title` is the title for the dataset
+   - `data` contains the payload in JSON, the format listed above
+   - `layout` contains the layout settings of the web UI, in JSON
+   - `last_update` is the UNIX time of the last update
+   - *functions for dashboard-related database queries*
+
+2. Web UI
+
+   - **Use AJAX requests, not templates, to update each dataset**
+
+   - Render work -> js
+
+   - Syntax
+
+     ```javascript
+     [
+         {
+             "display_name": "Generating",
+             "renderer": DEFAULT,
+             "data": data["gen"]
+         },
+         {
+             "display_name": "Map",
+             "renderer": DEFAULT,
+             "data": data["map"]
+         },
+         {
+        "display_name": "Storage",
+             "renderer": RATIO_BAR,
+        "text": data.battery.value.toString() + '/' + data.capacity.value.toString(),
+             "width": toPercentage(data.battery.value / data.capacity.value)
+         }
+     ]
+     ```
+     - As is known, the width of a progress bar should be a percentage, or BS4 will fail
+
+     - provide a helper function:
+     
+       ```javascript
+       function toPercentage(float x) {
+           return (x * 100).toString() + '%';
+       }
+       ```
+     
+     - provide highlight

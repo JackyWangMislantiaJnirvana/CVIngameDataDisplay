@@ -28,11 +28,13 @@
     <div class="row">
                 {% endif %}
 
-        <div class="col-md-{{ (12 / COL_PER_ROW) | int }}">
+        <div class="mt-3 mb-3 col-md-{{ (12 / COL_PER_ROW) | int }}">
             <div class="card card-info">
                 <div class="card-header">{{ user.username }}</div>
                 <div class="card-body">
-                            {{ user.description }}
+                    <div style="height: 2.5rem;">
+                            {{ user.description | truncate(25) }}
+                    </div>
                             <hr/>
                             <button type="button" class="btn btn-primary"
                                     onclick="window.open('{{ url_for('users.show_dashboard', username=user.username) }}')">
@@ -42,19 +44,9 @@
                     </div>
                 </div>
 
-        {% if loop.index0+1 is divisibleby COL_PER_ROW or loop.last %}
+        {% if (loop.index0+1) is divisibleby COL_PER_ROW or loop.last %}
             </div>
             {% endif %}
-
-            {% else %}
-            <div class="jumbotron">
-                <h2>
-                    No Users available.
-                </h2>
-                <p>
-                    Maybe you've just set up this site?
-                </p>
-            </div>
             {% endfor %}
 </div>
 <script src="/static/js/jquery.min.js"></script>
