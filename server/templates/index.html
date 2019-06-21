@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Minecraft Ingame Data Display</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/cover.css" rel="stylesheet">
+</head>
+
+<body class="text-center" style="background: url('/static/img/bg.png')">
+
+<div class="cover-container d-flex w-100 h-100 pt-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h3 class="masthead-brand">Minecraft Ingame DataType Display</h3>
+            <nav class="nav nav-masthead justify-content-center ml-5">
+                <a class="nav-link active" href="/">Home</a>
+                <a class="nav-link" href="{{ url_for('users.user_list') }}">User list</a>
+                {% if g.user %}
+                <div class="nav-link dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        {{ g.user['username'] }}
+                    </a>
+                    <div class="dropdown-menu masthead-dropdown">
+                        <a class="dropdown-item"
+                           href="{{ url_for('dashboard_manager.show_dashboard', username=g.user['username']) }}">Dashboard</a>
+                        <a class="dropdown-item"
+                           href="{{ url_for('users.show_settings', username=g.user['username']) }}">Settings</a>
+                        <div class="dropdown-divider">
+                        </div>
+                        <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
+                    </div>
+                </div>
+                {% else %}
+                <a class="nav-link" href="/login">Log in</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <h1 class="cover-heading">Minecraft Ingame DataType Display</h1>
+        <p class="lead">Keep an eye on the in-game machines online!</p>
+        <p class="lead">
+            <a href="/users/" class="btn btn-lg btn-secondary">Explore</a>
+        </p>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>By Jacky_Wang &amp; panda_2134</p>
+        </div>
+    </footer>
+    </div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>
