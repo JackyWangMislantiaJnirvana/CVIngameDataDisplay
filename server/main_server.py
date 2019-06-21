@@ -6,6 +6,7 @@ from server import auth
 from server import dashboard_manager
 from server import users
 from server.database import close_database
+from server.renderer.renderer_registry import registry as renderer_registry
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -14,6 +15,9 @@ app.config.from_pyfile('config.py')
 app.register_blueprint(auth.bp)
 app.register_blueprint(users.bp)
 app.register_blueprint(dashboard_manager.bp)
+
+# renderer
+renderer_registry.register_renderer_list()
 
 
 @app.route('/')

@@ -27,7 +27,7 @@ class PhyQuantity(DataType):
     def __repr__(self):
         return str(self.value) + str(self.unit)
 
-    def render(self, display_name):
+    def render(self, display_name, is_modal=True):
         return render_template('dataset/phy_quantity.html',
                                display_name=display_name, value=self.value, unit=self.unit)
 
@@ -37,17 +37,17 @@ class Text(DataType):
         assert('value' in d)
         super().__init__(d)
 
-    def render(self, display_name):
+    def render(self, display_name, is_modal=True):
         return render_template('dataset/plain_text.html',
                                display_name=display_name, value=self.value)
 
 
 class Boolean(DataType):
     def __init__(self, d):
-        assert('value' in d)
+        assert('value' in d and isinstance(d['value'], bool))
         super().__init__(d)
 
-    def render(self, display_name):
+    def render(self, display_name, is_modal=True):
         return render_template('dataset/boolean.html',
                                display_name=display_name, value=self.value)
 
@@ -66,5 +66,6 @@ class Image(DataType):
         assert('value' in d)
         super().__init__(d)
 
-    def render(self, display_name):
-        return NotImplementedError('Use Custom Renderer to render an image')
+    def render(self, display_name, is_modal=True):
+        return render_template('dataset/image.html',
+                               display_name=display_name, value=self.value, is_modal=is_modal)

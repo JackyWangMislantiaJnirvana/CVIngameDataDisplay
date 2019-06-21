@@ -1,0 +1,9 @@
+{% if not is_modal %}
+    <h6>{{ display_name }}</h6>
+    <img class="rounded" src="{{ value }}"/>
+{% else %}
+    <figure class="text-center">
+        <img class="figure-img rounded img-fluid" src="{{ value }}"/>
+        <figcaption class="figure-caption">{{ display_name }}</figcaption>
+    </figure>
+{% endif %}

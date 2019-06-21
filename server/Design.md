@@ -67,29 +67,28 @@ Method: POST
 Example:
 
 ```
-/users/user_name/update?api_secret=uuid&payload=
-    {
-    	"6bfac483": {
-    		"name": "MFE",
-    		"data": {
-    			"gen": {
-                    type: "PhyQuantity",
-                    unit: "EU/t",
-                    value: 1024
+{
+    	"api_secret": "3bfde100-1937-4fa2-95bf-0cb452d5500d",
+    	"payload": {
+            "6bfac483": {
+                "gen": {
+                "type": "PhyQuantity",
+                "unit": "EU/t",
+                "value": 1024
                 },
                 "battery": {
-                    "type": "PhyQuantity",
-                    "unit": "EU",
-                    "value": 5000
+                "type": "PhyQuantity",
+                "unit": "EU",
+                "value": 5000
                 },
                 "capacity": {
-                    "type": "PhyQuantity",
-                    "unit": "EU",
-                    "value": 32768
+                "type": "PhyQuantity",
+                "unit": "EU",
+                "value": 32768
                 },
-            	"map": {
-            		"type": "Image"
-                    "value": "data:image/gif;base64,R..."
+                "map": {
+                "type": "Image",
+                "value": "data:image/gif;base64,R..."
                 }
             }
         }
@@ -124,36 +123,34 @@ Example:
 
 2. Web UI
 
-   - **Use AJAX requests, not templates, to update each dataset**
-
    - Render work -> js
 
    - Syntax
 
      ```javascript
-     [
+  [
          {
              "display_name": "Generating",
-             "renderer": DEFAULT,
-             "data": data["gen"]
+             "render_type": DEFAULT,
+             "data": "gen"
          },
          {
              "display_name": "Map",
-             "renderer": DEFAULT,
-             "data": data["map"]
+             "render_type": DEFAULT,
+             "data": "map",
          },
          {
-        "display_name": "Storage",
-             "renderer": RATIO_BAR,
-        "text": data.battery.value.toString() + '/' + data.capacity.value.toString(),
+        		"display_name": "Storage",
+             "render_type": RATIO_BAR,
+        		"text": data.battery.value.toString() + '/' + data.capacity.value.toString(),
              "width": toPercentage(data.battery.value / data.capacity.value)
          }
      ]
      ```
      - As is known, the width of a progress bar should be a percentage, or BS4 will fail
-
+   
      - provide a helper function:
-     
+  
        ```javascript
        function toPercentage(float x) {
            return (x * 100).toString() + '%';

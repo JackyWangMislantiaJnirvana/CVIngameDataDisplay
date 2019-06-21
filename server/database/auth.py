@@ -91,7 +91,6 @@ user_removal_callback = []
 
 
 def on_user_creation(func):
-    pprint(func)
     user_creation_callback.append(func)
     return func
 
@@ -109,7 +108,6 @@ def create_user(username, password, code, api_secret, admin=False):
 
 
 def on_user_removal(func):
-    pprint(func)
     user_removal_callback.append(func)
     return func
 

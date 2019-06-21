@@ -12,6 +12,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/animate.css" rel="stylesheet">
     <link href="/static/css/fontawesome-all.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
@@ -20,6 +21,11 @@
 </head>
 
 <body>
+<script src="/static/js/timeago.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/popper.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script defer src="/static/js/bootbox.all.min.js"></script>
 <script src="/static/js/dashboard.js"></script>
 {% include 'navbar_default.html' %}
 <div class="container mt-5">
@@ -68,7 +74,7 @@
                 </div><!-- /.modal -->
             </div>
 
-            {% for id in datasets %}
+            {% for x in datasets %}
 
             <!-- Render in cards -->
             {% set COL_PER_ROW = 3 %}
@@ -77,32 +83,32 @@
                 {% endif %}
 
                 <div class="col-md-{{ (12 / COL_PER_ROW) | int }}">
-                    <div class="card" id="{{ id }}-card">
+                    <div class="card" id="{{ x.id }}-card">
                         <div class="card-header">
                             <form class="form-inline"
                                   action="{{ url_for('dashboard_manager.remove', username=username) }}"
-                                  id="{{ id }}-remove"
+                                  id="{{ x.id }}-remove"
                                   method="POST">
-                                <input type="hidden" name="id" value="{{ id }}"/>
+                                <input type="hidden" name="id" value="{{ x.id }}-remove"/>
                             </form>
                             <div>
-                            <button type="button" class="close removeBtn" style="display: none;" \
-                                    onclick="$('#{{ id }}-remove').submit(); Location.reload()">×
+                            <button type="button" class="close remove-btn" style="display: none;" \
+                                    onclick="$('#{{ x.id }}-remove').submit(); Location.reload()">×
                             </button>
                             </div>
-                            <h5 class="card-title">{{ datasets[id].name }}</h5>
-                            <div class="text-info">Last update: 2 mins ago</div>
+                            <h5 class="card-title">{{ x.title }}</h5>
+                            <div class="text-info">Last update:
+                                <div class="last-update-time" id="{{ x.id }}-time"></div>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <p class="card-text">
-                            {% for datum in datasets[id].data %}
-                            {% include 'datum_renderer.html' %}
-                            {% endfor %}
+                            <p class="card-text dataset-card" id="{{ x.id }}-content">
+                                <!-- To be replaced -->
                             </p>
                         </div>
                         <div class="card-footer">
                             <div class="text-center">
-                                <button onclick="$('#{{ id }}-modal').modal('show')" class="btn btn-block">
+                                <button onclick="$('#{{ x.id }}-modal').modal('show')" class="btn btn-block">
                                 <span class="fa fa-caret-down"></span>
                                 </button>
                             </div>
@@ -110,27 +116,27 @@
                     </div>
                 </div>
 
-                {% if loop.index0+1 is divisibleby COL_PER_ROW or loop.last %}
+            {% if loop.index0 + 1 is divisibleby COL_PER_ROW or loop.last %}
             </div>
             {% endif %}
 
             <!-- Render in modal dialogs -->
             <div>
-                <div id="{{ id }}-modal" class="modal fade" role="dialog">
+                <div id="{{ x.id }}-modal" class="modal fade" role="dialog">
                     <div class="modal-dialog modal-lg">
 
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h3 class="modal-title">
-                                    {{ datasets[id].name }}&nbsp;<small class="text-muted">{{ id }}</small>
+                                    {{ x.title }}&nbsp;<small class="text-muted">{{ x.id }}</small>
                                 </h3>
-                                <p class="text-info">Last update: 2 mins ago</p>
+                                <p class="text-info">Last update:
+                                    <div class="last-update-time-modal" id="{{ x.id }}-time-modal"></div>
+                                </p>
                             </div>
-                            <div class="modal-body">
-                                {% for datum in datasets[id].data %}
-                                {% include 'datum_renderer.html' %}
-                                {% endfor %}
+                            <div class="modal-body dataset-modal" id="{{ x.id }}-content-modal">
+                                <!-- To be replaced -->
                             </div>
                         </div>
 
@@ -141,9 +147,6 @@
         </div>
     </div>
 </div>
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/popper.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
 </body>
 
 </html>
