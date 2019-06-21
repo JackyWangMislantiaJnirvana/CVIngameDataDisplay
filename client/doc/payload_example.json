@@ -1,5 +1,6 @@
 {
-  "Nuclear Generator": {
+  "5e3c6bcf": {
+    "name": "Nuclear Generator",
     "Current generating": {
       "type": "text",
       "value": "50eu/t"
@@ -9,7 +10,8 @@
       "value": "500/8192"
     }
   },
-  "Main power bank": {
+  "6bfac483": {
+    "name": "Main power bank",
     "Input": {
       "type": "text",
       "value": "200eu/t"
