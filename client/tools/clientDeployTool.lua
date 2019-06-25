@@ -1,5 +1,17 @@
 local os = require("os")
+local shell = require("shell")
 
-os.execute("wget https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/master/client/src/CVDDCentral.lua /home/CVDDCentral.lua")
-os.execute("wget https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/master/client/lib/json.lua /usr/lib/json.lua")
-os.execute("wget https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/master/client/lib/utils/separate.lua /usr/lib/utils/separate.lua")
+local args = shell.parse(...)
+
+local urlHead = "https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/master/client/"
+
+-- lib deploy
+os.execute("wget " .. urlHead .. "lib/json.lua" .. " /usr/lib/json.lua")
+os.execute("wget " .. urlHead .. "lib/logging.lua" .. " /usr/lib/logging.lua")
+
+-- binary deploy
+if args[1] == "central" then
+  os.execute("wget " .. urlHead .. "src/CVDDCentral.lua" .. " /home/CVDDCentral.lua")
+elseif args[1] == "central" then
+  os.execute("wget " .. urlHead .. "src/CVDDDataProvider.lua" .. " /usr/lib/CVDDDataProvider.lua")
+end
