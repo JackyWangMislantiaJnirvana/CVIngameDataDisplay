@@ -98,22 +98,22 @@ local ProviderManager = {
   remoteProviders = {}
 }
 
-function ProviderManager.registerLocalProvider(name, callback)
-  ProviderManager.localProviders[name] = callback
+function ProviderManager.registerLocalProvider(id, callback)
+  ProviderManager.localProviders[id] = callback
 end
 
-function ProviderManager.registerRemoteProvider(name, address)
-  ProviderManager.remoteProviders[name] = address
+function ProviderManager.registerRemoteProvider(id, address)
+  ProviderManager.remoteProviders[id] = address
 end
 
 function ProviderManager.collectData()
   local collectedData = {}
-  for name, callback in pairs(ProviderManager.localProviders) do
-    collectedData[name] = callback()
+  for id, callback in pairs(ProviderManager.localProviders) do
+    collectedData[id] = callback()
   end
 
   logger:debug("now collecting remote data", "Central.ProviderManager.collectData")
-  for name, providerAddress in pairs(ProviderManager.remoteProviders) do
+  for id, providerAddress in pairs(ProviderManager.remoteProviders) do
     modem.send(providerAddress, cvddPortNumber, "REQ_DATA")
     local receivedData = select(6,
             event.pull(netTimeout,
@@ -124,9 +124,9 @@ function ProviderManager.collectData()
                     nil))
     logger:debug("receivedData = " .. tostring(receivedData), "Central.ProviderManager.collectData")
     if receivedData then
-      collectedData[name] = serialization.unserialize(receivedData)
+      collectedData[id] = serialization.unserialize(receivedData)
     else
-      logger:warning("Provider " .. name .. " do not response.", "Central.ProviderManager.collectData")
+      logger:warning("Provider " .. id .. " do not response.", "Central.ProviderManager.collectData")
     end
   end
   logger:debug("collectedData = " .. serialization.serialize(collectedData, true), "Central.ProviderManager.collectData()")
@@ -135,8 +135,9 @@ end
 --}}}
 
 --{{{ Provider Registration
+-- deathMessageProvider
 ProviderManager.registerLocalProvider(
-        "deathMessageProvider",
+        "6bfac483",
         function()
           return {
             message = {
@@ -147,8 +148,9 @@ ProviderManager.registerLocalProvider(
         end
 )
 
+-- timer
 ProviderManager.registerRemoteProvider(
-        "timer",
+        "2cd9f618",
         "8093a0e2-c9d4-4899-97b5-84631742f166"
 )
 --}}}
