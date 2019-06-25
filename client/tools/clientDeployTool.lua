@@ -16,17 +16,13 @@ local function downloadFile(origin, destination)
 end
 
 -- lib deploy
-print("Deploying /usr/lib/json.lua")
 downloadFile("lib/json.lua", "/usr/lib/json.lua")
 
-print("Deploying /usr/lib/logging.lua")
 downloadFile("lib/logging.lua", "/usr/lib/logging.lua")
 
 -- binary deploy
 if args[1] == "central" then
-  print("Deploying /home/CVDDCentral.lua")
   downloadFile("src/CVDDCentral.lua", "/home/CVDDCentral.lua")
 elseif args[1] == "central" then
-  print("Deploying /usr/lib/CVDDDataProvider.lua")
   downloadFile("src/CVDDDataProvider.lua", "/usr/lib/CVDDDataProvider.lua")
 end
