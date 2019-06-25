@@ -9,9 +9,9 @@
 
   - `MCU`: computers acting as real-time controllers, where data is collected.
   - `central`: a dedicated computer built to collect data.
-- `server`: all programs related to CVDD project running on VPS.
+- `server`: all programs related to CVDD project running on a dedicated web server.
   - `CGI`: Flask CGI program and its database.
-  - `front-end`: Bootstrap based front-end HTML/JS/CSS.
+  - `front-end`: dynamically-generated HTML pages.
 - `data`: information collected from MCUs and processed by CVDD systems.
   - `dataObject`: their structure is defined in `data_types.md`
   - `dataGroup`: map<`nameOfDataobject`, `dataObject`>
