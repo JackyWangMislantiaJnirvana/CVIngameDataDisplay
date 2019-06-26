@@ -54,7 +54,7 @@ end
 
 ## 运行原理
 
-![CVDDClient原理图](CVDDClient原理图.jpg)
+![CVDDClient原理图](https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/raw/client/client/doc/CVDDClient%E5%8E%9F%E7%90%86%E5%9B%BE.jpg)
 
 ### 组成部分
 
