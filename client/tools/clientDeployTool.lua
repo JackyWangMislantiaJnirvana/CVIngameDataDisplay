@@ -1,6 +1,7 @@
 local os = require("os")
 local shell = require("shell")
 local fs = require("filesystem")
+local io = require("io")
 
 local args = shell.parse(...)
 
@@ -23,6 +24,8 @@ downloadFile("lib/logging.lua", "/usr/lib/logging.lua")
 -- binary deploy
 if args[1] == "central" then
   downloadFile("src/CVDDCentral.lua", "/home/CVDDCentral.lua")
-elseif args[1] == "central" then
+elseif args[1] == "mcu" then
   downloadFile("src/CVDDDataProvider.lua", "/usr/lib/CVDDDataProvider.lua")
+else
+  io.stderr:write("clientDeployTool: bad argument. What's accepted: central/mcu.")
 end
