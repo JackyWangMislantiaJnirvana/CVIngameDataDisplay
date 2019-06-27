@@ -27,7 +27,7 @@ body {
 }
 
 #sidebar-wrapper .list-group-item.active {
-  background-color: #d8d9da !important;
+  background-color: #d8d9da;
   border-color: #d8d9da;
 }
 

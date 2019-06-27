@@ -3,7 +3,7 @@
 function notifySuccess(text, delay=750) {
     $.notify({ 
         message: text,
-        icon: 'fa fa-ok'
+        icon: 'fa fa-check'
     }, { 
         type: 'success', 
         delay: delay

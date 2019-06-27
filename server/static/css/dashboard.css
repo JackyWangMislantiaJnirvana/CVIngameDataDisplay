@@ -1,0 +1,8 @@
+.dashboard-header {
+    background-color: whitesmoke;
+}
+
+.dashboard-body {
+    background-color: #e6e6e6;
+    min-height: 60vh;
+}

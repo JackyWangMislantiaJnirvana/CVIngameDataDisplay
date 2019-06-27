@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from flask import *
 
 from server import utils
@@ -39,7 +41,6 @@ def update(username):
         return 'WRONG_API_SECRET', 403
     for k, v in data_post['payload'].items():
         assert (len(k) == 8)
-        print(v)
         dashboard_db.update_dataset_data(username, int(k, 16), json.dumps(v))
 
     return '', 204
@@ -57,5 +58,37 @@ def add(username):
 def remove(username):
     if username != g.user['username']:
         abort(403)
-    dashboard_db.drop_dashboard_table(username, idx=request.form['id'])
+    dashboard_db.remove_dataset(username, idx=int(request.form['id'], 16))
     return redirect(url_for('dashboard_manager.show_dashboard', username=username))
+
+
+@bp.route('/users/<username>/dashboard/edit_layout/<dataset>', methods=('GET', 'POST'))
+def edit_layout(username, dataset):
+    assert(isinstance(dataset, str))
+    dataset = int(dataset, 16)
+
+    delegate = DatasetDelegate(username, dataset)
+    if username != g.user['username']:
+        abort(403)
+    if request.method == 'GET':
+        return render_template('edit_layout.html', dataset=delegate)
+    elif request.method == 'POST':
+        layout_old = delegate.layout
+        try:
+            delegate.layout = request.form['layout']
+            delegate.render()
+        except JSONDecodeError as e:
+            delegate.layout = layout_old
+            return json.dumps({'status': 'json_error', 'exception': e.__dict__})
+        except IndexError:
+            delegate.layout = layout_old
+            return json.dumps({'status': 'renderer_error'})
+        except SyntaxError:
+            delegate.layout = layout_old
+            return json.dumps({'status': 'py_syntax_error'})
+        except KeyError:
+            delegate.layout = layout_old
+            return json.dumps({'status': 'key_error'})
+        return json.dumps({'status': 'success'})
+    else:
+        abort(400)

@@ -15,7 +15,10 @@ class DataType:
     def render(self, *args, **kwargs): pass
 
     def __init__(self, d):
-        self.__class__ = getattr(server.database.dashboard.data_type, d['type'])
+        try:
+            self.__class__ = getattr(server.database.dashboard.data_type, d['type'])
+        except AttributeError:
+            raise
         self.__dict__ = d
 
 

@@ -1,0 +1,23 @@
+#page-content-wrapper {
+    background-color: whitesmoke;
+}
+
+#sidebar-wrapper {
+    background-color: #f3f3f3;
+}
+
+input[type=text] {
+    background-color: rgba(253,253,253,0.89);
+}
+
+input[type=password] {
+    background-color: rgba(253,253,253,0.89);
+}
+
+.list-group-item-action {
+    background-color: #fafafa;
+}
+
+.list-group-item-action.active {
+    background-color: #dadada !important;
+}

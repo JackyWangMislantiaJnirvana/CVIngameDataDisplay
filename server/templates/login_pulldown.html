@@ -10,7 +10,9 @@
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
     </div>
+    <input type="hidden" value="g.user.username" id="login-username">
 </li>
 {% else %}
 <li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
+    <input type="hidden" value="Anonymous" id="login-username">
 {% endif %}

@@ -13,7 +13,8 @@
     <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
     <link href="/static/css/simple-sidebar.css" rel="stylesheet">
     <link href="/static/css/animate.css" rel="stylesheet">
-    <link href="/static/css/fontawesome-all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/5.8.2/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/settings.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
@@ -33,21 +34,21 @@
 {% include 'navbar_default.html' %}
 <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
-            <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="border-right" id="sidebar-wrapper">
                 <div class="sidebar-heading">User settings</div>
                 <div class="list-group list-group-flush">
                     <a onclick="switchSettings('general')" id="sidebar-general"
-                       class="list-group-item list-group-item-action bg-light active">General</a>
+                       class="list-group-item list-group-item-action active">General</a>
                     <a onclick="switchSettings('stat')" id="sidebar-stat"
-                       class="list-group-item list-group-item-action bg-light">Statistics</a>
+                       class="list-group-item list-group-item-action">Statistics</a>
                 </div>
                 {% if g.user['admin'] == 1 %}
                 <div class="sidebar-heading">Site Management</div>
                 <div>
                     <a onclick="switchSettings('accounts')" id="sidebar-accounts"
-                       class="list-group-item list-group-item-action bg-light">Accounts</a>
+                       class="list-group-item list-group-item-action">Accounts</a>
                     <a onclick="switchSettings('invcode')" id="sidebar-invcode"
-                       class="list-group-item list-group-item-action bg-light">Invite Code</a>
+                       class="list-group-item list-group-item-action">Invite Code</a>
                 </div>
                 {% endif %}
             </div>
@@ -150,7 +151,7 @@
                                     </span>
                             </td>
                             <td>
-                                <button class="btn btn-light" onclick="resetPassword('{{ user.username }}')">
+                                <button class="btn btn-secondary" onclick="resetPassword('{{ user.username }}')">
                                     Reset
                                 </button>
                             </td>
@@ -205,8 +206,7 @@
             </div>
         </div>
     </div>
-</div>
-</main>
+    </main>
 </div>
 </body>
 

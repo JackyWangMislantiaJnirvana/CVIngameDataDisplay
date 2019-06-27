@@ -92,7 +92,7 @@ Example:
                 }
             }
         }
-    }
+}
 
 ```
 
@@ -127,8 +127,10 @@ Example:
 
    - Syntax
 
+     - **NOTE: Every dynamically-rendered value should be a string, in order to be formatted in-place with `.format()`**
+   
      ```javascript
-  [
+      [
          {
              "display_name": "Generating",
              "render_type": DEFAULT,
@@ -142,19 +144,20 @@ Example:
          {
         		"display_name": "Storage",
              "render_type": RATIO_BAR,
-        		"text": data.battery.value.toString() + '/' + data.capacity.value.toString(),
-             "width": toPercentage(data.battery.value / data.capacity.value)
+        		"text": "{battery.value} / {capacity.value}",
+             "width": "{battery.value} / {capacity.value}"
          }
      ]
-     ```
+   ```
      - As is known, the width of a progress bar should be a percentage, or BS4 will fail
    
-     - provide a helper function:
-  
-       ```javascript
-       function toPercentage(float x) {
-           return (x * 100).toString() + '%';
-       }
+     - provide a helper function in python code:
+     
+       ```python
+       def to_percentage(x):
+           return str(x * 100) + '%'
+       
        ```
      
      - provide highlight
+

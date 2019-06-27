@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 
-from database.dashboard import dashboard_db
+from server.database.dashboard import dashboard_db
 from server.renderer.renderer_registry import registry as renderer_registry
 from server import database
 from server.utils import get_dashboard_name
@@ -51,15 +51,25 @@ class DatasetDelegate:
     def title(self):
         raise ValueError('Cannot delete title')
 
-    def set_layout(self, layout_list):
+    @property
+    def layout(self):
+        return self._get_db_item()['layout']
+
+    @layout.setter
+    def layout(self, layout_list):
         """
         Parse the layout to JSON, and store into database
         :param layout_list: list of dicts
         :return: None
         """
+        if isinstance(layout_list, list):  # python list
+            layout_list = json.dumps(layout_list)
+        else:
+            json.loads(layout_list)  # checking for JSON errors
+
         db = database.get_database()
         db.execute(f'UPDATE {get_dashboard_name(self.username)} SET layout = ? WHERE id = ?',
-                   (json.dumps(layout_list), self.idx))
+                   (layout_list, self.idx))
         db.commit()
 
     @property
@@ -108,6 +118,10 @@ class DatasetDelegate:
 
         layout_list = json.loads(self._get_db_item()['layout'])
         for x in layout_list:
-            buf = buf + renderer_registry.get_renderer(x['render_type']).render(self.data_content, x, is_modal=is_modal)
+            try:
+                buf = buf + renderer_registry.get_renderer(x['render_type']) \
+                    .render(self.data_content, x, is_modal=is_modal)
+            except Exception:
+                raise
 
         return buf
