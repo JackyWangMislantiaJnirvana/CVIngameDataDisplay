@@ -1,0 +1,37 @@
+{% extends 'docs/base.html' %}
+{% block page_title %}
+Documentation
+{% endblock %}
+{% block page_body %}
+<div style="background-color: whitesmoke;">
+    <div class="container">
+        <div class="display-4 pt-4 pb-4">Documentation</div>
+    </div>
+</div>
+<div style="background-color: #e6e6e6">
+    <div class="container pt-3">
+        <div style="min-height: 70vh;">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" data-toggle="list" href="#list-intro" role="tab">Introduction</a>
+                {% for x in docs %}
+                <a class="list-group-item list-group-item-action" data-toggle="list" href="#list-{{ x.html_name }}" role="tab">{{
+                    x.title }}</a>
+                {% endfor %}
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="list-intro" role="tabpanel">
+                    <p>New to the website? Have a look at the documentation here.</p>
+                    <p>To register an account, please contact the administrator first to get an invite code.</p>
+                </div>
+                {% for x in docs %}
+                <div class="tab-pane fade" id="list-{{ x.html_name }}" role="tabpanel">
+                    <object data="/docs/getdoc.cgi?doc={{ loop.index0 }}" type="text/html"
+                            class="docs-content">
+                    </object>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+.error-wrapper {
+    background-color: #e6e6e6;
+    text-align: center;
+    height: 70vh;
+}
+
+.error-line {
+    display: block;
+}

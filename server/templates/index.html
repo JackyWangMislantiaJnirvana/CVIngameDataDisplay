@@ -23,6 +23,7 @@
             <nav class="nav nav-masthead justify-content-center ml-5">
                 <a class="nav-link active" href="/">Home</a>
                 <a class="nav-link" href="{{ url_for('users.user_list') }}">User list</a>
+                <a class="nav-link" id="nav-link-docs" href="{{ url_for('docs.docs_list') }}">Docs</a>
                 {% if g.user %}
                 <div class="nav-link dropdown">
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">

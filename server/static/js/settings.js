@@ -36,17 +36,6 @@ function notifyCodeNotFound() {
     notifyError('<b>Invite code not found</b> Please check the invite code again.')
 }
 
-function switchSettings(name) {
-    $('.sidebar-page').each(function (idx, name) {
-        $(name).hide()
-    });
-    $('.list-group-item').each(function (idx, name) {
-        $(name).removeClass('active');
-    });
-    $('#page-'+name).show(); $('#sidebar-'+name).addClass('active');
-    
-}
-
 // general
 
 $(function() {
@@ -57,14 +46,14 @@ $(function() {
             notifySuccess('User description updated.');
         }
     });
-})
+});
 
 $(function () {
     $('#changePWForm').ajaxForm({
         error: function (xhr) {
             if(xhr.status < 500) {
-                if(xhr.responseText == 'WRONG_OLD_PASSWORD') notifyError('Wrong old password.');
-                else if(xhr.responseText == 'PASSWORD_NO_MATCH') notifyError('Passwords don\'t match');
+                if(xhr.responseText === 'WRONG_OLD_PASSWORD') notifyError('Wrong old password.');
+                else if(xhr.responseText === 'PASSWORD_NO_MATCH') notifyError('Passwords don\'t match');
                 else notifyISE();
             } else notifyISE();
         },
@@ -72,24 +61,23 @@ $(function () {
             notifySuccess('Password updated.');
         }
     });
-})
+});
 
 // stat
 
 // accounts
 
 function recheckIsAdminState(name) {
-    var flag = $('#'+name+'-is-admin').prop('checked')
     $.ajax({
-        url: '/site_management/set_admin',
+        url: '/site_management/toggle_admin',
         method: 'POST',
         data: {
             username: name
         },
         error: function(xhr) {
             if(xhr.status < 500) {
-                if(xhr.responseText == 'PERMISSION_DENIED') notifyPermissionDenied();
-                else if(xhr.responseText == 'USER_NOT_FOUND') notifyUserNotFound();
+                if(xhr.responseText === 'PERMISSION_DENIED') notifyPermissionDenied();
+                else if(xhr.responseText === 'USER_NOT_FOUND') notifyUserNotFound();
                 else notifyISE();
             } else notifyISE();
         },
@@ -112,8 +100,8 @@ function resetPassword(name) {
                 },
                 error: function (result) {
                     if (result.text != null) {
-                        if (result.text == 'PERMISSION_DENIED') notifyPermissionDenied();
-                        else if (result.text == 'USER_NOT_FOUND') notifyUserNotFound();
+                        if (result.text === 'PERMISSION_DENIED') notifyPermissionDenied();
+                        else if (result.text === 'USER_NOT_FOUND') notifyUserNotFound();
                         else notifyISE();
                     } else notifyISE();
                 },
@@ -122,7 +110,7 @@ function resetPassword(name) {
                     msg += '<div class=\"input-group\">'
                     msg += '<input class=\"form-control\" id=\"userNewPass\" readonly autofocus value=\"' + result.password + '\">';
                     msg += '<button class=\"btn input-group-append btn-light\" data-clipboard-text=\"' + result.password + '\"><span class=\"fa fa-clipboard\"></span></button>'
-                    msg += '</div>'
+                    msg += '</div>';
                     var alt = bootbox.alert({
                         title: "New password for \"" + name + "\"",
                         message: msg
@@ -145,7 +133,7 @@ function removeUser(name) {
         message: "Are you sure to remove \"" + name + "\" from the users?",
         callback: function(result) {
             if(!result) return;
-            $('#' + name).hide()
+            $('#' + name).hide();
             $.ajax({
                 url: '/site_management/remove_user',
                 method: 'POST',
@@ -154,8 +142,8 @@ function removeUser(name) {
                 },
                 error: function (xhr) {
                     if (xhr.status < 500) {
-                        if (xhr.responseText == 'PERMISSION_DENIED') notifyPermissionDenied();
-                        else if (xhr.responseText == 'USER_NOT_FOUND') notifyUserNotFound();
+                        if (xhr.responseText === 'PERMISSION_DENIED') notifyPermissionDenied();
+                        else if (xhr.responseText === 'USER_NOT_FOUND') notifyUserNotFound();
                         else notifyISE();
                     } else notifyISE();
                 },
@@ -172,7 +160,7 @@ function removeInvCode(code) {
         message: "Are you sure to remove the invite code \"" + code + "\"?",
         callback: function (result) {
             if (!result) return;
-            $('#' + code).hide()
+            $('#' + code).hide();
             $.ajax({
                 url: '/site_management/remove_invite_code',
                 method: 'POST',
@@ -181,8 +169,8 @@ function removeInvCode(code) {
                 },
                 error: function (xhr) {
                     if (xhr.status < 500) {
-                        if (xhr.responseText == 'PERMISSION_DENIED') notifyPermissionDenied();
-                        else if (xhr.responseText == 'CODE_NOT_FOUND') notifyCodeNotFound();
+                        if (xhr.responseText === 'PERMISSION_DENIED') notifyPermissionDenied();
+                        else if (xhr.responseText === 'CODE_NOT_FOUND') notifyCodeNotFound();
                         else notifyISE();
                     } else notifyISE();
                 },
@@ -202,7 +190,7 @@ function appendInviteCode() {
         data: {},
         error: function (result) {
             if (result.text != null) {
-                if (result.text == 'PERMISSION_DENIED') notifyPermissionDenied();
+                if (result.text === 'PERMISSION_DENIED') notifyPermissionDenied();
                 else notifyISE();
             } else notifyISE();
         },
@@ -217,9 +205,17 @@ function appendInviteCode() {
                                 '</td>',
                             '</tr>'
             ];
-            var h = '';
+            let i, h = '';
             for(i in TEMPLATE) h += TEMPLATE[i];
             $('#invcode-list').append(h);
         }
     })
 }
+
+// sidebar
+function toggleSidebar() {
+    let sw = $('#sidebar-wrapper'), ew = $('#sidebar-exit-wrap');
+    sw.toggleClass('active'); ew.toggleClass('active');
+}
+
+$('body').on('show.bs.tab', function() { toggleSidebar() });

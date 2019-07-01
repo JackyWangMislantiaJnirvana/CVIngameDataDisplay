@@ -1,6 +1,7 @@
-from json import JSONDecodeError
+import logging
+import json
 
-from flask import *
+from flask import Blueprint, request, render_template, abort, redirect, url_for, g
 
 from server import utils
 from server import database
@@ -43,6 +44,7 @@ def update(username):
         assert (len(k) == 8)
         dashboard_db.update_dataset_data(username, int(k, 16), json.dumps(v))
 
+    logging.getLogger(__name__).info('Dashboard updated. Username = ' + username)
     return '', 204
 
 
@@ -68,7 +70,7 @@ def edit_layout(username, dataset):
     dataset = int(dataset, 16)
 
     delegate = DatasetDelegate(username, dataset)
-    if username != g.user['username']:
+    if g.user is None or username != g.user['username']:
         abort(403)
     if request.method == 'GET':
         return render_template('edit_layout.html', dataset=delegate)
@@ -77,7 +79,7 @@ def edit_layout(username, dataset):
         try:
             delegate.layout = request.form['layout']
             delegate.render()
-        except JSONDecodeError as e:
+        except json.JSONDecodeError as e:
             delegate.layout = layout_old
             return json.dumps({'status': 'json_error', 'exception': e.__dict__})
         except IndexError:

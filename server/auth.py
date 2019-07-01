@@ -80,6 +80,5 @@ def register():
         elif not server.database.auth.invite_code_exists(invite_code):
             return 'wrongInvCode', 403
         else:
-            api_secret = str(uuid.uuid4())
-            server.database.auth.create_user(username, password, invite_code, api_secret)
+            server.database.auth.create_user(username, password, invite_code)
             return '', 204

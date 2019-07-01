@@ -1,6 +1,8 @@
 import hashlib
+import logging
 import random
 import string
+import uuid
 from pprint import pprint
 
 from flask import current_app
@@ -26,6 +28,7 @@ def append_invite_code() -> tuple:
     db.execute('INSERT INTO invite_code (code) values (?)', (code,))
     db.commit()
     cid = db.execute('SELECT * FROM invite_code where code = ?', (code,)).fetchone()['id']
+    logging.getLogger(__name__).info('Invite code generated: ' + code)
     return cid, code
 
 
@@ -34,6 +37,7 @@ def remove_invite_code(code):
     if invite_code_exists(code):
         db.execute('DELETE FROM invite_code WHERE code = ?', (code,))
         db.commit()
+    logging.getLogger(__name__).info('Invite code removed: ' + code)
 
 
 def get_invcode_list():
@@ -83,6 +87,7 @@ def set_admin(username: str, is_admin: bool):
     db = database.get_database()
     db.execute('UPDATE user SET admin=? WHERE username=?', (int(is_admin), username))
     db.commit()
+    logging.getLogger(__name__).info('User set to admin: ' + username)
 
 
 # User creation & decorator
@@ -95,7 +100,7 @@ def on_user_creation(func):
     return func
 
 
-def create_user(username, password, code, api_secret, admin=False):
+def create_user(username, password, code, api_secret=str(uuid.uuid4()), admin=False):
     db = database.get_database()
 
     assert ((not username_exists(username)) and (password != '') and invite_code_exists(code))
@@ -105,6 +110,7 @@ def create_user(username, password, code, api_secret, admin=False):
     db.commit()
     for func in user_creation_callback:
         func(username)
+    logging.getLogger(__name__).info('User created: ' + username)
 
 
 def on_user_removal(func):
@@ -121,6 +127,7 @@ def remove_user(username):
 
     db.execute('DELETE FROM user WHERE username = ?', (username,))
     db.commit()
+    logging.getLogger(__name__).info('User removed: ' + username)
 
 
 def validate_login(username, password) -> bool:

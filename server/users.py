@@ -56,8 +56,8 @@ def block_site_management():
     abort(404)
 
 
-@bp.route('/site_management/set_admin', methods=('POST',))
-def set_admin():
+@bp.route('/site_management/toggle_admin', methods=('POST',))
+def toggle_admin():
     if g.user is None or not auth.is_admin(g.user['username']):
         return "PERMISSION_DENIED", 403
     if auth.get_user(request.values['username']) is None:

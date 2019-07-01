@@ -141,10 +141,12 @@
                                         Last update:&nbsp;<span class="last-update-time" id="{{ x.id }}-time-modal"></span>
                                     </div>
                                 </div>
+                                {% if g.user and g.user['username'] == username %}
                                 <a class="btn btn-secondary" href="{{ url_for('dashboard_manager.edit_layout',
                                     username=username, dataset=(x.id | string)) }}">
                                     <span class="fa fa-cogs"></span>
                                 </a>
+                                {% endif %}
                             </div>
                             <div class="modal-body dataset-modal" id="{{ x.id }}-content-modal">
                                 <!-- To be replaced -->

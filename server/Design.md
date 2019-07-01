@@ -133,21 +133,22 @@ Example:
       [
          {
              "display_name": "Generating",
-             "render_type": DEFAULT,
+             "render_type": 0,
              "data": "gen"
          },
          {
              "display_name": "Map",
-             "render_type": DEFAULT,
+             "render_type": 0,
              "data": "map",
          },
          {
         		"display_name": "Storage",
-             "render_type": RATIO_BAR,
+             "render_type": 1,
         		"text": "{battery.value} / {capacity.value}",
              "width": "{battery.value} / {capacity.value}"
          }
      ]
+     ```
    ```
      - As is known, the width of a progress bar should be a percentage, or BS4 will fail
    
@@ -157,7 +158,7 @@ Example:
        def to_percentage(x):
            return str(x * 100) + '%'
        
-       ```
-     
+   ```
+   
      - provide highlight
 
