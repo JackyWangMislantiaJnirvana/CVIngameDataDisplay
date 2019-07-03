@@ -9,55 +9,74 @@ local os = require("os")
 local json = require("json")
 local event = require("event")
 local logger = require("logging").new("/home/log/central.log")
-                                 :setDebug(false)
+                                 :setDebug(true)
                                  :setChannel(true, true)
 local serialization = require("serialization")
 local component = require("component")
+local iter = require("utils.iterators")
+
 if component.modem == nil then
   error("at least one modem is required for CVDD service")
 end
 local modem = component.modem
 --}}}
 
---{{{ Settings
-local runLevelEnum = {
-  localCT = 1,
-  productivityCT = 2,
-  localIntegrate = 3,
-  productivity = 4
-}
+--{{{ Helpers
+---@class DataPost
+local DataPost = {}
+DataPost.__index = DataPost
 
-local runLevel = runLevelEnum.localIntegrate
+function DataPost.new(data)
+  local object = {}
 
-local cvddServiceUsername = ""
-local localTestServerUrl = "http://127.0.0.1:5000/"
-local productivityUrl = table.concat { "/users/", cvddServiceUsername, "/update" }
-local api_secret = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  --- Actual dataPost table
+  ---@private
+  object.data = data
 
-local cvddPortNumber = 1340
--- how long is the time between two auto posts
--- measured in seconds
-local sleepTime = 20
-local netTimeout = 2
-
-local testData = {
-  status = "OK",
-  message = "panda_2134 played chicken with a train; the train won."
-}
-
-if runLevel == runLevelEnum.localCT or runLevel == runLevelEnum.localIntegrate then
-  targetUrl = localTestServerUrl
-elseif runLevel == runLevelEnum.productivityCT or runLevel == runLevelEnum.productivity then
-  targetUrl = productivityUrl
+  setmetatable(object, DataPost)
+  return object
 end
---}}}
 
---{{{ Auxs
--- Just an alias to shorten the typing.
--- When calling internet.request(), openOS
--- WON'T test the connectivity at once.
--- ANY network error will not appear until you read the response
--- data from the response object.
+function DataPost:appendAuthHeader(apiSecret)
+  self.apiSecret = apiSecret
+  return self
+end
+
+function DataPost:postTo(url)
+  self.response = internet.request(
+          url,
+          {
+            payload = json.encode(self.data),
+            api_secret = self.apiSecret
+          }
+  )
+  return self
+end
+
+function DataPost:receiveAndPrintResponse()
+  local success, responseMessage = pcall(function()
+    local res = {}
+    for chunk in self.response do
+      table.insert(res, chunk)
+    end
+    return table.concat(res)
+  end)
+  if success then
+    print("[ok] post was sent to and accepted by server.")
+    print("---------Start-Of-Response----------")
+    print(responseMessage)
+    print("---------End-Of-Response------------")
+  else
+    logger:severe(responseMessage, "Central.receiveAndPrintResponse")
+  end
+end
+
+--[[
+--- Just an alias to shorten the typing.
+--- When calling internet.request(), openOS
+--- WON'T test the connectivity at once.
+--- ANY network error will not appear until you read the response
+--- data from the response object.
 local function sendHTTPPost(url, data)
   return internet.request(url, data)
 end
@@ -80,9 +99,11 @@ local function receiveAndPrintResponse(responseObject)
     logger:severe(responseMessage, "Central.receiveAndPrintResponse")
   end
 end
+--]]
 
-local function appendAuthHeader(post)
-  post.api_secret = api_secret
+--[[
+local function appendAuthHeader(post, apiSecret)
+  post.api_secret = apiSecret
   return post
 end
 
@@ -90,13 +111,23 @@ local function appendPayload(post, payload)
   post.payload = json.encode(payload)
   return post
 end
+--]]
 
 ---@class ProviderManager
 local ProviderManager = {
   ---@type table<string, fun():table>
   localProviders = {},
+  ---@type table<string, string>
   remoteProviders = {}
 }
+
+function ProviderManager.setPortNumber(portNumber)
+  ProviderManager.portNumber = portNumber
+end
+
+function ProviderManager.setNetTimeout(netTimeout)
+  ProviderManager.netTimeout = netTimeout
+end
 
 function ProviderManager.registerLocalProvider(id, callback)
   ProviderManager.localProviders[id] = callback
@@ -114,13 +145,13 @@ function ProviderManager.collectData()
 
   logger:debug("now collecting remote data", "Central.ProviderManager.collectData")
   for id, providerAddress in pairs(ProviderManager.remoteProviders) do
-    modem.send(providerAddress, cvddPortNumber, "REQ_DATA")
+    modem.send(providerAddress, ProviderManager.portNumber, "REQ_DATA")
     local receivedData = select(6,
-            event.pull(netTimeout,
+            event.pull(ProviderManager.netTimeout,
                     "modem_message",
                     nil,
                     providerAddress,
-                    cvddPortNumber,
+                    ProviderManager.portNumber,
                     nil))
     logger:debug("receivedData = " .. tostring(receivedData), "Central.ProviderManager.collectData")
     if receivedData then
@@ -130,10 +161,116 @@ function ProviderManager.collectData()
     end
   end
   logger:debug("collectedData = " .. serialization.serialize(collectedData, true), "Central.ProviderManager.collectData()")
-  return collectedData
+  return DataPost.new(collectedData)
 end
+
 --}}}
 
+--{{{ Config Loader
+local RUN_LEVEL = {
+  localCT = 1,
+  productivityCT = 2,
+  localIntegrate = 3,
+  productivity = 4
+}
+local REQUIRED_CONFIGS = {}
+
+local env = {
+  RUN_LEVEL = RUN_LEVEL
+}
+local config = {}
+config.localTestServerUrl = "http://127.0.0.1:5000"
+
+table.insert(REQUIRED_CONFIGS, "runLevel")
+function env.runLevel(runLevel)
+  if runLevel ~= RUN_LEVEL.localCT and
+          runLevel ~= RUN_LEVEL.localIntegrate and
+          runLevel ~= RUN_LEVEL.productivity and
+          runLevel ~= RUN_LEVEL.productivityCT then
+    logger:fatal("Invalid run level.", "Central.ConfigLoader.RunLevel")
+  end
+  config.runLevel = runLevel
+end
+
+table.insert(REQUIRED_CONFIGS, "username")
+function env.username(username)
+  if type(username) ~= "string" then
+    logger:fatal("Invalid username.", "Central.ConfigLoader.Username")
+  end
+  config.username = username
+  config.productivityUrl = table.concat {
+    "", -- TODO what's the url of server???
+    "/users/", username, "/update"
+  }
+end
+
+table.insert(REQUIRED_CONFIGS, "apiSecret")
+function env.apiSecret(apiSecret)
+  if type(apiSecret) ~= "string" then
+    logger:fatal("Invalid api secret.", "Central.ConfigLoader.ApiSecret")
+  end
+  config.apiSecret = apiSecret
+end
+
+function env.provider(hash, address)
+  if type(hash) ~= "string" then
+    logger:fatal("Invalid hash.", "Central.ConfigLoader.Provider")
+  elseif type(address) ~= "string" then
+    logger:fatal("Invalid address.", "Central.ConfigLoader.Provider")
+  end
+  ProviderManager.registerRemoteProvider(hash, address)
+end
+
+table.insert(REQUIRED_CONFIGS, "sleepTimeout")
+function env.sleepTimeout(sleepTimeout)
+  if type(sleepTimeout) ~= "number" then
+    logger:fatal("Invalid sleep timeout.", "Central.ConfigLoader.SleepTimeout")
+  end
+  config.sleepTimeout = sleepTimeout
+end
+
+table.insert(REQUIRED_CONFIGS, "netTimeout")
+function env.netTimeout(netTimeout)
+  if type(netTimeout) ~= "number" then
+    logger:fatal("Invalid net timeout.", "Central.ConfigLoader.NetTimeout")
+  end
+  config.netTimeout = netTimeout
+end
+
+table.insert(REQUIRED_CONFIGS, "portNumber")
+function env.portNumber(portNumber)
+  config.portNumber = portNumber
+end
+
+local ok, err = pcall(loadfile("config.lua", "t", env))
+if not ok then
+  logger:fatal("cannot load settings, reason: " .. err, "Central.ConfigLoader")
+else
+  local missingConfigs = {}
+  for requiredConfig in iter.allValues(REQUIRED_CONFIGS) do
+    if config[requiredConfig] == nil then
+      table.insert(missingConfigs, requiredConfig)
+    end
+  end
+  if #missingConfigs ~= 0 then
+    logger:severe(
+            "Missing config item(s):\n" .. table.concat(missingConfigs, "\n"),
+            "Central.ConfigLoader"
+    )
+  end
+end
+
+if config.runLevel == RUN_LEVEL.localCT or config.runLevel == RUN_LEVEL.localIntegrate then
+  config.targetUrl = config.localTestServerUrl
+elseif config.runLevel == RUN_LEVEL.productivityCT or config.runLevel == RUN_LEVEL.productivity then
+  config.targetUrl = config.productivityUrl
+end
+
+ProviderManager.setNetTimeout(config.netTimeout)
+ProviderManager.setPortNumber(config.portNumber)
+--}}}
+
+--[[
 --{{{ Provider Registration
 -- deathMessageProvider
 ProviderManager.registerLocalProvider(
@@ -154,33 +291,53 @@ ProviderManager.registerRemoteProvider(
         "8093a0e2-c9d4-4899-97b5-84631742f166"
 )
 --}}}
+--]]
 
 --{{{ Main
+logger:info("===LoggerTest===", "Central.Main")
+logger:warning("===LoggerTest===", "Central.Main")
+logger:severe("===LoggerTest===", "Central.Main")
+
 logger:info("Crescent Ville Data Display Client Central Data Collector", "Central.Main")
-if runLevel == runLevelEnum.localCT then
-  logger:info("Running post connectivity test.", "Central.Main")
-  receiveAndPrintResponse(sendHTTPPost(targetUrl, testData))
-elseif runLevel == runLevelEnum.localIntegrate or runLevel == runLevelEnum.productivity then
-  if runLevelEnum == runLevelEnum.productivity then
+if config.runLevel == RUN_LEVEL.localCT then
+  logger:info("Running local post connectivity test.", "Central.Main")
+  --receiveAndPrintResponse(sendHTTPPost(config.targetUrl, testData))
+  local testData = {
+    status = "OK",
+    message = "panda_2134 played chicken with a train; the train won."
+  }
+  DataPost.new(testData):appendAuthHeader(config.apiSecret):postTo(config.targetUrl):receiveAndPrintResponse()
+elseif config.runLevel == RUN_LEVEL.localIntegrate or config.runLevel == RUN_LEVEL.productivity then
+  if RUN_LEVEL == RUN_LEVEL.productivity then
     logger:info("Running in productivity env.", "Central.Main")
-  elseif runLevel == runLevelEnum.localIntegrate then
+  elseif config.runLevel == RUN_LEVEL.localIntegrate then
     logger:info("Running local integrate test.", "Central.Main")
   end
-  modem.open(cvddPortNumber)
-  logger:info("Listening port " .. cvddPortNumber .. ".", "Central.Main")
+  modem.open(config.portNumber)
+  logger:info("Listening port " .. config.portNumber .. ".", "Central.Main")
 
   while true do
+    --[[
     -- wow, I want a pipeline
     receiveAndPrintResponse(
             sendHTTPPost(
-                    targetUrl,
+                    config.targetUrl,
                     appendAuthHeader(
                             appendPayload({},
-                                    ProviderManager.collectData())
+                                    ProviderManager.collectData()),
+                            config.apiSecret
                     )
             )
     )
-    os.sleep(sleepTime)
+    --]]
+    ProviderManager.collectData()
+                   :appendAuthHeader(config.apiSecret)
+                   :postTo(config.targetUrl)
+                   :receiveAndPrintResponse()
+
+    os.sleep(config.sleepTimeout)
   end
+else
+  logger:severe("Run level not specified. Exiting...")
 end
 --}}}
