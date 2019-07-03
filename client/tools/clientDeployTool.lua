@@ -17,13 +17,18 @@ local function downloadFile(origin, destination)
 end
 
 -- lib deploy
+print("Trying to make directories... Don't panic if they already exist.")
+os.execute("mkdir /usr/lib/utils/")
+os.execute("mkdir /home/log/")
 downloadFile("lib/json.lua", "/usr/lib/json.lua")
-downloadFile("lib/utils/iterator.lua", "/usr/lib/utils/iterator.lua")
+downloadFile("lib/utils/separate.lua", "/usr/lib/utils/separate.lua")
+downloadFile("lib/utils/iterators.lua", "/usr/lib/utils/iterators.lua")
 downloadFile("lib/logging.lua", "/usr/lib/logging.lua")
 
 -- binary deploy
 if args[1] == "central" then
   downloadFile("src/CVDDCentral.lua", "/home/CVDDCentral.lua")
+  downloadFile("src/config.lua", "/home/config.lua")
 elseif args[1] == "mcu" then
   downloadFile("src/CVDDDataProvider.lua", "/usr/lib/CVDDDataProvider.lua")
 else
