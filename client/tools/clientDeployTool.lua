@@ -18,7 +18,7 @@ end
 
 -- lib deploy
 downloadFile("lib/json.lua", "/usr/lib/json.lua")
-downloadFile("lib/iterator.lua", "//usr/lib/iterator.lua")
+downloadFile("lib/utils/iterator.lua", "/usr/lib/utils/iterator.lua")
 downloadFile("lib/logging.lua", "/usr/lib/logging.lua")
 
 -- binary deploy
