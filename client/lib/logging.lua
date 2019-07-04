@@ -8,6 +8,7 @@
 
 local os = require("os")
 local term = require("term")
+local fs = require("filesystem")
 
 ---@class LoggingLevel[]
 ---@private
@@ -87,6 +88,13 @@ end
 ---@public
 function M:setLogDir(logDir)
   checkArg(1, logDir, "string")
+  if not fs.exists(logDir) then
+    if not fs.exists(fs.path(logDir)) then
+      local folderToBeCreated = fs.path(logDir)
+      os.execute("mkdir " .. folderToBeCreated)
+    end
+    os.execute("touch " .. logDir)
+  end
   self.fileHandles[logDir] = assert(io.open(logDir, "a"),
           "failed to open " .. logDir)
   self.logFileDir = logDir
