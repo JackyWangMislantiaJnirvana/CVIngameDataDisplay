@@ -6,10 +6,10 @@ import server
 
 
 class DataType:
-    '''
+    """
     Represent a datum in the dataset.
     Initialize with a dict (see API)
-    '''
+    """
 
     @abstractmethod
     def render(self, *args, **kwargs): pass
@@ -18,7 +18,7 @@ class DataType:
         try:
             self.__class__ = getattr(server.database.dashboard.data_type, d['type'])
         except AttributeError:
-            raise
+            self.__class__ = UnknownType
         self.__dict__ = d
 
 
@@ -72,3 +72,11 @@ class Image(DataType):
     def render(self, display_name, is_modal=True):
         return render_template('dataset/image.html',
                                display_name=display_name, value=self.value, is_modal=is_modal)
+
+
+class UnknownType(DataType):
+    def __init__(self, d):
+        super().__init__(d)
+
+    def render(self, *args, **kwargs):
+        raise NotImplementedError('UnknownType Data cannot be rendered')
