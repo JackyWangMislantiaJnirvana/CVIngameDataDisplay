@@ -45,7 +45,7 @@ end
 function DataPost:postTo(url)
   local body = {payload = self.data, api_secret = self.apiSecret};
   local header = {}
-  header["Content-Type"] = "application/json" 
+  header["Content-Type"] = "application/json"
   self.response = internet.request(url, json.encode(body), header)
   return self
 end
@@ -134,7 +134,6 @@ local env = {
   RUN_LEVEL = RUN_LEVEL
 }
 local config = {}
-config.localTestServerUrl = "http://127.0.0.1:5000/users/admin/update"
 
 table.insert(REQUIRED_CONFIGS, "runLevel")
 function env.runLevel(runLevel)
@@ -147,16 +146,20 @@ function env.runLevel(runLevel)
   config.runLevel = runLevel
 end
 
+table.insert(REQUIRED_CONFIGS, "baseUrl")
+function env.baseUrl(baseUrl)
+  if type(baseUrl) ~= "string" then
+    logger:fatal("Invalid baseUrl.", "Central.ConfigLoader.BaseUrl")
+  end
+  config.baseUrl = baseUrl
+end
+
 table.insert(REQUIRED_CONFIGS, "username")
 function env.username(username)
   if type(username) ~= "string" then
     logger:fatal("Invalid username.", "Central.ConfigLoader.Username")
   end
   config.username = username
-  config.productivityUrl = table.concat {
-    "", -- TODO what's the url of server???
-    "/users/", username, "/update"
-  }
 end
 
 table.insert(REQUIRED_CONFIGS, "apiSecret")
@@ -197,6 +200,10 @@ function env.portNumber(portNumber)
   config.portNumber = portNumber
 end
 
+function env.localTestServerUrl(url)
+  config.localTestServerUrl = url
+end
+
 local ok, err = pcall(loadfile("config.lua", "t", env))
 if not ok then
   logger:fatal("cannot load settings, reason: " .. err, "Central.ConfigLoader")
@@ -214,6 +221,13 @@ else
     )
   end
 end
+
+config.productivityUrl = table.concat {
+  config.baseUrl,
+  "/users/",
+  config.username,
+  "/update"
+}
 
 if config.runLevel == RUN_LEVEL.localCT or config.runLevel == RUN_LEVEL.localIntegrate then
   config.targetUrl = config.localTestServerUrl
