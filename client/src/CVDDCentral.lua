@@ -43,13 +43,10 @@ function DataPost:appendAuthHeader(apiSecret)
 end
 
 function DataPost:postTo(url)
-  self.response = internet.request(
-          url,
-          {
-            payload = json.encode(self.data),
-            api_secret = self.apiSecret
-          }
-  )
+  local body = {payload = self.data, api_secret = self.apiSecret};
+  local header = {}
+  header["Content-Type"] = "application/json" 
+  self.response = internet.request(url, json.encode(body), header)
   return self
 end
 
@@ -70,48 +67,6 @@ function DataPost:receiveAndPrintResponse()
     logger:severe(responseMessage, "Central.receiveAndPrintResponse")
   end
 end
-
---[[
---- Just an alias to shorten the typing.
---- When calling internet.request(), openOS
---- WON'T test the connectivity at once.
---- ANY network error will not appear until you read the response
---- data from the response object.
-local function sendHTTPPost(url, data)
-  return internet.request(url, data)
-end
-
--- Network err handling is located here.
-local function receiveAndPrintResponse(responseObject)
-  local success, responseMessage = pcall(function()
-    local res = {}
-    for chunk in responseObject do
-      table.insert(res, chunk)
-    end
-    return table.concat(res)
-  end)
-  if success then
-    print("[ok] post was sent to and accepted by server.")
-    print("---------Start-Of-Response----------")
-    print(responseMessage)
-    print("---------End-Of-Response------------")
-  else
-    logger:severe(responseMessage, "Central.receiveAndPrintResponse")
-  end
-end
---]]
-
---[[
-local function appendAuthHeader(post, apiSecret)
-  post.api_secret = apiSecret
-  return post
-end
-
-local function appendPayload(post, payload)
-  post.payload = json.encode(payload)
-  return post
-end
---]]
 
 ---@class ProviderManager
 local ProviderManager = {
@@ -160,7 +115,7 @@ function ProviderManager.collectData()
       logger:warning("Provider " .. id .. " do not response.", "Central.ProviderManager.collectData")
     end
   end
-  logger:debug("collectedData = " .. serialization.serialize(collectedData, true), "Central.ProviderManager.collectData()")
+  logger:info("collectedData = " .. serialization.serialize(collectedData, true), "Central.ProviderManager.collectData()")
   return DataPost.new(collectedData)
 end
 
@@ -179,7 +134,7 @@ local env = {
   RUN_LEVEL = RUN_LEVEL
 }
 local config = {}
-config.localTestServerUrl = "http://127.0.0.1:5000"
+config.localTestServerUrl = "http://127.0.0.1:5000/users/admin/update"
 
 table.insert(REQUIRED_CONFIGS, "runLevel")
 function env.runLevel(runLevel)
@@ -270,29 +225,6 @@ ProviderManager.setNetTimeout(config.netTimeout)
 ProviderManager.setPortNumber(config.portNumber)
 --}}}
 
---[[
---{{{ Provider Registration
--- deathMessageProvider
-ProviderManager.registerLocalProvider(
-        "6bfac483",
-        function()
-          return {
-            message = {
-              type = "text",
-              value = "panda_2134 played chicken with a train; the train won"
-            }
-          }
-        end
-)
-
--- timer
-ProviderManager.registerRemoteProvider(
-        "2cd9f618",
-        "8093a0e2-c9d4-4899-97b5-84631742f166"
-)
---}}}
---]]
-
 --{{{ Main
 logger:info("===LoggerTest===", "Central.Main")
 logger:warning("===LoggerTest===", "Central.Main")
@@ -317,19 +249,6 @@ elseif config.runLevel == RUN_LEVEL.localIntegrate or config.runLevel == RUN_LEV
   logger:info("Listening port " .. config.portNumber .. ".", "Central.Main")
 
   while true do
-    --[[
-    -- wow, I want a pipeline
-    receiveAndPrintResponse(
-            sendHTTPPost(
-                    config.targetUrl,
-                    appendAuthHeader(
-                            appendPayload({},
-                                    ProviderManager.collectData()),
-                            config.apiSecret
-                    )
-            )
-    )
-    --]]
     ProviderManager.collectData()
                    :appendAuthHeader(config.apiSecret)
                    :postTo(config.targetUrl)
