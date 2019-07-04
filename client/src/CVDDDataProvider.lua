@@ -15,7 +15,7 @@ local M = {
   dataBuffer = {}
 }
 
-M.ADDRESS_CENTRAL = "ef2ec3b8-939c-40eb-a8b2-819b643d4a2d"
+M.ADDRESS_CENTRAL = "b780cfd5-c39a-45c0-987e-2861b818ff98"
 M.PORT_NUMBER = 1340
 
 -- Unregister? Oh, NO-WAY! that requires the original function registered, and I think
@@ -50,14 +50,14 @@ end
 
 function M.submitText(name, value)
   M.dataBuffer[name] = {
-    type = "text",
+    type = "Text",
     value = value
   }
 end
 
 function M.submitPhyQuantity(name, value, unit)
   M.dataBuffer[name] = {
-    type = "phyQuantity",
+    type = "PhyQuantity",
     value = value,
     unit = unit
   }
@@ -65,14 +65,14 @@ end
 
 function M.submitBoolean(name, value)
   M.dataBuffer[name] = {
-    type = "boolean",
+    type = "Boolean",
     value = value
   }
 end
 
 function M.submitVector(name, ...)
   M.dataBuffer[name] = {
-    type = "vector",
+    type = "Vector",
     value = { ... }
   }
 end
