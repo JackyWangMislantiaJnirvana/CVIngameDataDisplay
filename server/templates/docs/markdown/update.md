@@ -8,7 +8,7 @@ The *dashboard* is where all in-game data will be displayed. Every user has his/
 
 #### Update an dataset
 
-- **To avoid re-inventing the wheels, please have a look at our [CVDD Client](https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/blob/client/client/doc/CVDDClient用户指南.md).**
+- **To avoid re-inventing the wheels, please have a look at our [CVDD Client(Chinese)](https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/blob/master/README.md).**
 
 - The update API are provided here for your information.
 

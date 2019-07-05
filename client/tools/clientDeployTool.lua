@@ -5,7 +5,7 @@ local io = require("io")
 
 local args = shell.parse(...)
 
-local urlHead = "https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/client/client/"
+local urlHead = "https://raw.githubusercontent.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/master/client/"
 
 local function downloadFile(origin, destination)
   print("Deploying " .. destination .. ".")

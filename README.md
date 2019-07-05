@@ -54,7 +54,7 @@ end
 
 ## 运行原理
 
-![CVDDClient原理图](https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/raw/client/client/doc/CVDDClient%E5%8E%9F%E7%90%86%E5%9B%BE.jpg)
+![CVDDClient原理图](https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay/raw/master/client/doc/CVDDClient%E5%8E%9F%E7%90%86%E5%9B%BE.jpg)
 
 ### 组成部分
 
@@ -76,7 +76,7 @@ CVDD系统的客户端由两个部分组成：`Central`程序和`DataProvider`�
 
 有人可能会好奇为何CVDD要先将想要提交的数据缓存起来，再发给中心机。为何不**在调用`DataProvider`接口的时候就直接把东西发过去**（*同步运行*）？
 
-众所周知，网络通信是个玄学的东西，即使是`Opencomputers`里面虚构的计算机网络也是一样。它的响应速度远远不如`MCU`该有的运行速度。`MCU`为了保证自己能实时响应外界情况的变化（如，随时检查反应堆的温度是否是安全的），每次主循环（感知、决策、执行）的耗时至少在50毫秒以下。如果采用了上述同步运行的策略，如此高频率（<50ms一次的请求频率）的消息发送会直接让网络系统像堵厕所一样堵起来（听说过DOS攻击么？）。
+众所周知，网络通信是个玄学的东西，即使是`OpenComputers`里面虚构的计算机网络也是一样。它的响应速度远远不如`MCU`该有的运行速度。`MCU`为了保证自己能实时响应外界情况的变化（如，随时检查反应堆的温度是否是安全的），每次主循环（感知、决策、执行）的耗时至少在50毫秒以下。如果采用了上述同步运行的策略，如此高频率（<50ms一次的请求频率）的消息发送会直接让网络系统像堵厕所一样堵起来（听说过DOS攻击么？）。
 
 另外，`MCU`上运行的主循环会被慢得多的网络通信给“卡住”，即*阻塞（Block）*。在某种情况下这是一件危险的事情：设想你用这样一个程序来监控你家的反应堆，可电脑却把时间全都花在网络延迟上了...可能会导致一些戏剧性的结果。
 
