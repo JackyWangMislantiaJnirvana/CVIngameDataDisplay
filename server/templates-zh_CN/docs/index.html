@@ -40,7 +40,6 @@
                             "/docs/getdoc.cgi",
                             {doc: {{ loop.index0 }} },
                             function (d) {
-                                console.log(d);
                                 let con = $("#docs-content-{{ x.html_name }}");
                                 con.html(d);
                                 t.innerHTML = con.find("title").text();
