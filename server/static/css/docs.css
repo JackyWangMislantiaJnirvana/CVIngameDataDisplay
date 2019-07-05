@@ -8,6 +8,10 @@
     width:80%;
 }
 
+div#write {
+    margin-left: 0;
+}
+
 #list-tab { float: right; }
 
 #write {

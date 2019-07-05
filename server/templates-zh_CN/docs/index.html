@@ -1,0 +1,56 @@
+{% extends 'docs/base.html' %}
+{% block page_title %}
+Documentation
+{% endblock %}
+{% block page_body %}
+<div style="background-color: whitesmoke;">
+    <div class="container">
+        <div class="display-4 pt-4 pb-4">文档</div>
+    </div>
+</div>
+<div style="background-color: #e6e6e6">
+    <div class="container pt-3">
+        <div class="row" style="min-height: 70vh;">
+            <div class="tab-content col">
+                <div class="tab-pane fade show active" id="list-intro" role="tabpanel">
+                    <p>初来乍到？你可以看看文档。</p>
+                    <p>如果你没有账户，请联系管理员以获得邀请码。</p>
+                </div>
+                {% for x in docs %}
+                <div class="tab-pane fade" id="list-{{ x.html_name }}" role="tabpanel">
+                    <object class="docs-content" id="docs-content-{{ x.html_name }}">
+                    </object>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="list-group col-md-2" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" data-toggle="list" href="#list-intro" role="tab">Introduction</a>
+                {% for x in docs %}
+                <a class="list-group-item list-group-item-action" id="list-tab-{{ x.html_name }}"
+                   data-toggle="list" href="#list-{{ x.html_name }}" role="tab"></a>
+                {% endfor %}
+            </div>
+            {% for x in docs %}
+                <script>
+                    // Load localized title on load
+                    (function () {
+                        let t = document.getElementById("list-tab-{{ x.html_name }}");
+                        $.get(
+                            "/docs/getdoc.cgi",
+                            {doc: {{ loop.index0 }} },
+                            function (d) {
+                                console.log(d);
+                                let con = $("#docs-content-{{ x.html_name }}");
+                                con.html(d);
+                                t.innerHTML = con.find("title").text();
+                            },
+                            "html"
+                        )
+                    })()
+                </script>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    <!--TODO: 1. l10n for doc 2. english documentation html title 3. upload 2 vps-->
+{% endblock %}

@@ -4,16 +4,15 @@ bp = Blueprint('docs', __name__)
 
 
 class Document:
-    def __init__(self, html_name, incl_path, title):
+    def __init__(self, html_name, incl_path):
         self.html_name = html_name
         self.incl_path = incl_path
-        self.title = title
 
 
 docs = [
-    Document('update', 'docs/update.html', 'Update'),
-    Document('basic-layout', 'docs/basic_layout.html', 'Basic Layout'),
-    Document('renderer', 'docs/renderer.html', 'Renderer')
+    Document('update', 'docs/update.html'),
+    Document('basic-layout', 'docs/basic_layout.html'),
+    Document('renderer', 'docs/renderer.html')
 ]
 
 
@@ -30,7 +29,7 @@ def getdoc():
     except ValueError:
         abort(400)
 
-    if doc_id < len(docs):
+    try:
         return render_template(docs[doc_id].incl_path)
-    else:
+    except IndexError:
         abort(400)

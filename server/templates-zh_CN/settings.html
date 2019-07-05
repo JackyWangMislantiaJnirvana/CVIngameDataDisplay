@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>设置</title>
+    
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-switch.css" rel="stylesheet">
+    <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/static/css/animate.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/5.8.2/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/settings.css" rel="stylesheet">
+    
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    
+    <body>
+        <script defer src="/static/js/jquery.min.js"></script>
+        <script defer src="/static/js/popper.min.js"></script>
+        <script defer src="/static/js/bootstrap.min.js"></script>
+        <script defer src="/static/js/jquery.form.min.js"></script>
+        <script defer src="/static/js/bootstrap-notify.min.js"></script>
+        <script defer src="/static/js/bootbox.all.min.js"></script>
+        <script defer src="/static/js/clipboard.min.js"></script>
+        <script defer src="/static/js/settings.js"></script>
+        {% include 'navbar_default.html' %}
+        <div id="sidebar-toggle">
+            <button onclick="toggleSidebar()" class="btn btn-md btn-dark">
+                <span class="fas fa-bars"></span>
+            </button>
+        </div>
+        <div class="d-flex" id="wrapper">
+            <!-- Sidebar -->
+            <div onclick="toggleSidebar()" id="sidebar-exit-wrap"></div>
+            <div class="border-right" id="sidebar-wrapper">
+                <div class="list-group list-group-flush" role="tablist">
+                    <div class="sidebar-heading">用户设置</div>
+                    <a id="sidebar-general" data-toggle="list" href="#page-general" role="tab"
+                    class="list-group-item list-group-item-action active">通用</a>
+                    <a id="sidebar-stat" data-toggle="list" href="#page-stat" role="tab"
+                    class="list-group-item list-group-item-action">统计</a>
+                    {% if g.user['admin'] == 1 %}
+                    <div class="sidebar-heading">站点管理</div>
+                    <a id="sidebar-accounts" data-toggle="list" href="#page-accounts" role="tab"
+                    class="list-group-item list-group-item-action">用户</a>
+                    <a id="sidebar-invcode" data-toggle="list" href="#page-invcode" role="tab"
+                    class="list-group-item list-group-item-action">邀请码</a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- /#sidebar-wrapper -->
+            
+            <!-- Page Content -->
+            <main id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row" style="margin-top: 1rem">
+                        <div class="col-md-12">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" role="tabpanel" id="page-general">
+                                    <!-- Edit description -->
+                                    <div style="margin-bottom:5rem">
+                                        <h3>Description</h3>
+                                        <hr/>
+                                        <form id="descriptionForm" role="form" method="POST" action="{{ url_for('users.edit_description') }}">
+                                            <div class="form-group">
+                                                <label>编辑用户描述</label>
+                                                <input type="text" class="form-control" name="description"
+                                                value="{{ g.user['description'] }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="submit" value="提交" class="btn btn-md btn-primary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!--change password-->
+                                    <div style="margin-bottom:5rem">
+                                        <h3>更改密码</h3>
+                                        <hr/>
+                                        <form id="changePWForm" role="form" method="POST" action="{{ url_for('users.change_pw') }}">
+                                            <div class="form-group">
+                                                <label>旧密码</label>
+                                                <input autocomplete="current-password" type="password" class="form-control" name="passwordOld" required>
+                                                <label>新密码</label>
+                                                <input autocomplete="new-password" type="password" class="form-control" name="passwordNew" required>
+                                                <label>再次输入新密码</label>
+                                                <input autocomplete="new-password" type="password" class="form-control" name="passwordNewAgain" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="submit" value="提交" class="btn btn-md btn-primary">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- show api secret -->
+                                    <div style="margin-bottom:5rem">
+                                        <h3>API</h3>
+                                        <hr/>
+                                        <form role="form">
+                                            <label>API Secret</label>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="apiSecret" readonly
+                                                value="{{ g.user['api_secret'] }}"/>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" role="tabpanel" id="page-stat">
+                                    正在建设中...
+                                </div>
+                                {% if g.user['admin'] == 1 %}
+                                <div class="tab-pane fade" role="tabpanel" id="page-accounts">
+                                    <h3>用户管理</h3>
+                                    <hr/>
+                                    <table class="table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>UID</th>
+                                                <th>用户名</th>
+                                                <th>用户描述</th>
+                                                <th>API Secret</th>
+                                                <th>管理员?</th>
+                                                <th>重置密码</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for user in userlist %}
+                                            <tr id="{{ user.username }}">
+                                                <td>{{ user.id }}</td>
+                                                <td>{{ user.username }}</td>
+                                                <td>{{ user.description | truncate(20) }}</td>
+                                                <td>{{ user.api_secret }}</td>
+                                                <td>
+                                                    <span class="switch switch-sm">
+                                                        <input type="checkbox" class="switch" id="{{ user.username }}-is-admin"
+                                                        {% if user['admin'] == 1 %}
+                                                        checked
+                                                        {% endif %}
+                                                        onchange="recheckIsAdminState('{{ user.username }}')"/>
+                                                        <label for="{{ user.username }}-is-admin"></label>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-secondary" onclick="resetPassword('{{ user.username }}')">
+                                                        重置
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="close removeBtn"
+                                                    onclick="removeUser('{{ user.username }}');">×
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" role="tabpanel" id="page-invcode">
+                                <div class="row">
+                                    <div class="col">
+                                        <h3>邀请码管理</h3>
+                                    </div>
+                                    <div class="col">
+                                        <div class="float-right">
+                                            <button class="btn btn-secondary" onclick="appendInviteCode()"><span
+                                                class="fa fa-plus"></span> 增加
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <table class="table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>邀请码</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invcode-list">
+                                        {% for invcode in invcode_list %}
+                                        <tr id="{{ invcode.code }}">
+                                            <td>{{ invcode.id }}</td>
+                                            <td>{{ invcode.code }}</td>
+                                            <td>
+                                                <button type="button" class="close removeBtn"
+                                                onclick="removeInvCode('{{ invcode.code }}');">×
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

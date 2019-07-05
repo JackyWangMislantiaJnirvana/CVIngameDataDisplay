@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="zh-cmn-Hans">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Register</title>
+    <title>注册新用户</title>
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -21,50 +21,50 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 offset-5">
-            <img src="/static/img/icon.png" height=300px width=300px></img>
+            <img src="/static/img/icon.png" height=300px width=300px/>
             <div class="alert alert-danger" id="registerErrorAlert" style="display: none">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <strong>Registration failed.</strong>
-                <div id="wrongUsername" style="display: none">Username in use.</div>
-                <div id="wrongPassword" style="display: none">Passwords don't match.</div>
-                <div id="wrongInvCode" style="display: none">Invalid invite code.</div>
+                <strong>注册失败。</strong>
+                <div id="wrongUsername" style="display: none">用户名已被占用。</div>
+                <div id="wrongPassword" style="display: none">两次输入密码不一致。</div>
+                <div id="wrongInvCode" style="display: none">邀请码错误。</div>
             </div>
             <div class="alert alert-danger" id="internalErrorAlert" style="display: none">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <strong>Internal error.</strong> <br/>
-                <p>Please contact the website administrator.</p>
+                <strong>服务器内部错误。</strong> <br/>
+                <p>请联系网站管理员。</p>
             </div>
             <div class="card">
                 <div class="card-header">
                     <h4>
-                        Create an account
+                        注册新用户
                     </h4>
                 </div>
                 <div class="card-body">
                     <form id="registerForm" action="#" method="POST">
                         <div class="form-group">
-                            <label for="inputUsername">Username</label>
+                            <label for="inputUsername">用户名</label>
                             <input type="text" class="form-control" id="username" name="username" placeholder=""
                                    required
                                    pattern="[0-9a-zA-Z_]{1,16}"
-                                   title="Username should only contain letters, numbers and underscore, and mustn't exceed 16 characters. e.g. JohnDoe_1">
+                                   title="用户名只应该包含大小写字母、数字、下划线，且不超过16字符。如：JohnDoe_1">
                         </div>
                         <div class="form-group">
-                            <label for="inputPassword">Password</label>
+                            <label for="inputPassword">密码</label>
                             <input type="password" class="form-control" name="password" placeholder="" required
                                    minlength=6>
                         </div>
                         <div class="form-group">
-                            <label for="inputPasswordAgain">Password Again</label>
+                            <label for="inputPasswordAgain">再次输入密码</label>
                             <input type="password" class="form-control" name="passwordAgain" placeholder="" required
                                    minlength=6>
                         </div>
                         <div class="form-group">
-                            <label for="inputInviteCode">Invite Code</label>
+                            <label for="inputInviteCode">邀请码</label>
                             <input type="text" class="form-control" name="inviteCode" placeholder="" required
                                    pattern="[0-9a-zA-Z]{12}">
                         </div>
-                        <button class="btn btn-block btn-md btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-block btn-md btn-primary" type="submit">提交</button>
                     </form>
                 </div>
             </div>

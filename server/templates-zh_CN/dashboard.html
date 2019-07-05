@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="zh-cmn-Hans">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="timeago-lang" content="en_US">
+    <meta name="timeago-lang" content="zh_CN">
 
-    <title>Dashboard</title>
+    <title>仪表板</title>
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -33,20 +33,20 @@
 <input type="hidden" id="page-username" value="{{ username }}">
             <div class="page-header dashboard-header pb-1">
                 <div class="container pt-5">
-                    <h1>Dashboard of {{ username }}</h1>
+                    <h1>{{ username }} 的仪表板</h1>
                     <div class="d-flex flex-row justify-content-between p-2">
                         <div class="flex-column">
-                            <p><strong>Description</strong>: {{ desc | truncate(200) }}</p>
+                            <p><strong>用户描述</strong>: {{ desc | truncate(200) }}</p>
                         </div>
                         <div class="flex-column">
                             {% if g.user and g.user['username'] == username %}
                             <div class="btn-group" role="group">
                                 <button class="btn btn-secondary" onclick="$('#addDataset').modal('show')"><span
-                                        class="fa fa-plus"></span> Add
+                                        class="fa fa-plus"></span> 添加
                                 </button>
                                 <button class="btn btn-secondary" onclick="toggleRemove();"><span
                                         class="fa fa-trash"></span>
-                                    Remove
+                                    删除
                                 </button>
                             </div>
                             {% endif %}
@@ -60,7 +60,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Add a dataset</h4>
+                            <h4 class="modal-title">添加数据集</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -68,7 +68,7 @@
                                   id="addDatasetForm" method="POST">
                                 <div class="form-group">
                                     <label for="datasetName">
-                                        Dataset Name
+                                        数据集名称
                                     </label>
                                     <input type="text" class="form-control" name="datasetName" required>
                                 </div>
@@ -105,7 +105,7 @@
                             </button>
                             </div>
                             <h5 class="card-title">{{ x.title }}</h5>
-                            <div class="text-info">Last update:
+                            <div class="text-info">上次更新:
                                 <span class="last-update-time" id="{{ x.id }}-time"></span>
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                                 <div class="modal-title">
                                     <h3>{{ x.title }}&nbsp;<small class="text-muted">{{ x.id }}</small></h3>
                                     <div class="text-info">
-                                        Last update:&nbsp;<span class="last-update-time" id="{{ x.id }}-time-modal"></span>
+                                        上次更新:&nbsp;<span class="last-update-time" id="{{ x.id }}-time-modal"></span>
                                     </div>
                                 </div>
                                 {% if g.user and g.user['username'] == username %}

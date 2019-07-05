@@ -5,14 +5,14 @@
         {{ g.user['username'] }}
     </a>
     <div class="dropdown-menu">
-        <a class="dropdown-item" href="{{ url_for('dashboard_manager.show_dashboard', username=g.user['username']) }}">Dashboard</a>
-        <a class="dropdown-item" href="{{ url_for('users.show_settings')}}">Settings</a>
+        <a class="dropdown-item" href="{{ url_for('dashboard_manager.show_dashboard', username=g.user['username']) }}">仪表板</a>
+        <a class="dropdown-item" href="{{ url_for('users.show_settings')}}">设置</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
+        <a class="dropdown-item" href="{{ url_for('auth.logout') }}">登出</a>
     </div>
     <input type="hidden" value="{{ g.user.username }}" id="login-username">
 </li>
 {% else %}
-<li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
+<li class="nav-item"><a class="nav-link" href="/login">登录</a></li>
     <input type="hidden" value="Anonymous" id="login-username">
 {% endif %}

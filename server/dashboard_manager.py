@@ -37,6 +37,7 @@ def show_dashboard(username):
 @bp.route('/users/<username>/update', methods=('POST',))
 def update(username):
     data_post = request.get_json()
+    if data_post is None: abort(400)
     # authorization
     if 'api_secret' not in data_post or database.auth.get_user(username)['api_secret'] != data_post['api_secret']:
         return 'WRONG_API_SECRET', 403

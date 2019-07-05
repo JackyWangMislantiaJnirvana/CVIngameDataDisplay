@@ -63,6 +63,11 @@ function requestDatasets() {
 function requestLastUpdate() {
     let i, c = $('.last-update-time');
     let baseURL = "/users/" + $('#page-username').attr('value') + "/dashboard/";
+    let lang = "en_US", meta = document.getElementsByTagName("meta");
+    if(meta["timeago-lang"].content !== undefined)
+        lang = meta["timeago-lang"].content;
+
+    console.log(lang);
 
     for(i = 0; i < c.length; i++) {
         let idx = c[i].id.split('-')[0];
@@ -73,9 +78,8 @@ function requestLastUpdate() {
                     'dataset': idx
                 },
                 'success': function (xhr) {
-                    console.log(xhr);
-                    elem.setAttribute('datetime', (new Date(parseInt(xhr) * 1000)).toISOString())
-                    timeago().render(elem)
+                    elem.setAttribute('datetime', (new Date(parseInt(xhr) * 1000)).toISOString());
+                    timeago().render(elem, lang)
                 }
             })
         })(idx, c[i]);
