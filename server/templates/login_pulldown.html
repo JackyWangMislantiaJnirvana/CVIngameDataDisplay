@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% if g.user %}
+<li class="nav-item dropdown">
+    <a data-toggle="dropdown" class="nav-link dropdown-toggle" href="#">
+        {{ g.user['username'] }}
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="{{ url_for('dashboard_manager.show_dashboard', username=g.user['username']) }}">Dashboard</a>
+        <a class="dropdown-item" href="{{ url_for('users.show_settings')}}">Settings</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
+    </div>
+    <input type="hidden" value="{{ g.user.username }}" id="login-username">
+</li>
+{% else %}
+<li class="nav-item"><a class="nav-link" href="/login">Log in</a></li>
+    <input type="hidden" value="Anonymous" id="login-username">
+{% endif %}

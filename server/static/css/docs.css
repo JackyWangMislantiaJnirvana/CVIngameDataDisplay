@@ -1,0 +1,24 @@
+.list-group-item.active {
+    background-color: #a8a9aa;
+    border-color: #a8a9aa;
+}
+
+.docs-content {
+    height:60vh;
+    width:80%;
+}
+
+div#write {
+    margin-left: 0;
+}
+
+#list-tab { float: right; }
+
+#write {
+    padding: 0px !important;
+}
+
+@media (max-width: 768px) {
+    #list-tab { float: none !important; }
+    .docs-content { width: 100% !important; }
+}

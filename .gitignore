@@ -2,3 +2,15 @@
 openoslibs
 *.iml
 /build.xml
+
+server/__pycache__/
+
+server/database/__pycache__/
+
+server/database/dashboard/__pycache__/
+
+server/renderer/__pycache__/
+
+server/cvdd\.log
+
+server/data_display\.sqlite
