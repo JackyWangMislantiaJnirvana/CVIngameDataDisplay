@@ -9,7 +9,6 @@
 cd /var/www/
 git clone https://github.com/JackyWangMislantiaJnirvana/CVIngameDataDisplay.git
 cd CVIngameDataDisplay
-git checkout server
 vi server/config.py # 更改 SECRET_KEY 和 SALT
 cd server
 # 建立virtualenv并激活
