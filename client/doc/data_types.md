@@ -1,17 +1,17 @@
 # Data Types
 
-- `text` Plain text
+- `Text` Plain text
 ```json
 {
-    "type":"text",
+    "type":"Text",
     "value":"Panda played chicken with a train; the train won."
 }
 ```
 
-- `image` Scalar Image（`value` is base64 encoded string of the image）
+- `Image` Scalar Image（`value` is base64 encoded string of the image）
 ```json
 {
-    "type":"image",
+    "type":"Image",
     "height":120,
     "weight":120,
     "title":"map",
@@ -19,18 +19,18 @@
 }
 ```
 
-- `boolean`
+- `Boolean`
 ```json
 {
-    "type":"boolean",
+    "type":"Boolean",
     "value":true
 }
 ```
 
-- `phyQuantity` Physical Quantity（An integer or a float with unit）（If you don't want a unit，just set `unit` to `null`）（Considering there's little chance for us to use _scientific notation_, so we use normal form to represent physical quantities.）
+- `PhyQuantity` Physical Quantity（An integer or a float with unit）（If you don't want a unit，just set `unit` to empty string）（Considering there's little chance for us to use _scientific notation_, so we use normal form to represent physical quantities.）
 ```json
 {
-    "type":"phyQuantity",
+    "type":"PhyQuantity",
     "value":200,
     "unit":"EU"
 }
@@ -38,16 +38,17 @@
 
 ```json
 {
-    "type":"phyQuantity",
-    "value":213.4,
+    "type":"PhyQuantity",
+    "value":600.0,
     "unit":"MJ"
 }
 ```
 
-- `vector`（used to represent any multi-dimensional data, such as coordinates and intervals.）（Considering there's little chance for us to use multi-dimensional physical quantities, every component of `vector` doesn't have a unit.）
+- `Vector`（used to represent any multi-dimensional data, such as coordinates and intervals.）（Considering there's little chance for us to use multi-dimensional physical quantities, every component of `Vector` doesn't have a unit.）
 ```json
 {
-    "type":"vector",
+    "type":"Vector",
     "value":[100, 200]
 }
 ```
+
