@@ -1,6 +1,6 @@
 {% extends 'docs/base.html' %}
 {% block page_title %}
-Documentation
+文档
 {% endblock %}
 {% block page_body %}
 <div style="background-color: whitesmoke;">
@@ -24,7 +24,8 @@ Documentation
                 {% endfor %}
             </div>
             <div class="list-group col-md-2" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action active" data-toggle="list" href="#list-intro" role="tab">Introduction</a>
+                <a class="list-group-item list-group-item-action active"
+                   data-toggle="list" href="#list-intro" role="tab">简介</a>
                 {% for x in docs %}
                 <a class="list-group-item list-group-item-action" id="list-tab-{{ x.html_name }}"
                    data-toggle="list" href="#list-{{ x.html_name }}" role="tab"></a>

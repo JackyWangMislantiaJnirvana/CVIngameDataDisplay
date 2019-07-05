@@ -17,7 +17,7 @@ with open(argv[1], 'r+', encoding='utf8') as f:
     style = soup.new_tag('link', rel='stylesheet', href=TYPORA_CSS_PATH)
     soup.html.head.append(style)
 
-    soup.html.title.string = capwords(' '.join(soup.title.string.split('_')))
+    soup.html.title.string = soup.find_all('h2')[0].find_all('span')[0].string
     f.seek(0)
-    f.write(soup.prettify())
+    f.write(str(soup))
     f.truncate(f.tell())

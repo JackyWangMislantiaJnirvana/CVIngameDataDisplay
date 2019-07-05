@@ -7,8 +7,8 @@ from server import auth, dashboard_manager, users, errorhandler, docs
 from server.database import close_database, get_database
 from server.renderer.renderer_registry import registry as renderer_registry
 
-# app = Flask(__name__, template_folder="templates-zh_CN")
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates-zh_CN")
+# app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
 # blueprint

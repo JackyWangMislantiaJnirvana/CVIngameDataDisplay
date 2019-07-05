@@ -20,3 +20,6 @@ sip==4.19.8
 six==1.11.0
 Werkzeug==0.15.4
 wrapt==1.10.11
+BeautifulSoup4==4.7.1
+html5lib==1.0.1
+gunicorn==19.9.0
