@@ -1,4 +1,6 @@
-# CVDD Client用户指南
+# CVDD 用户指南
+
+<small>若需了解服务端开发细节，请浏览 `server/README.md`</small>
 
 `Cresent Ville Data Display`（简称`CVDD`）是一套用来将Minecraft游戏内的信息收集汇总，上传到一个网页绘制成可视化的图表/仪表盘展示出来，以实现*在游戏外就能监控游戏里面机器的运转情况* 的一套软件/服务。这套系统采用服务器-客户端架构，客户端运行在Minecraft内`Opencomputers`模组的电脑上。
 
